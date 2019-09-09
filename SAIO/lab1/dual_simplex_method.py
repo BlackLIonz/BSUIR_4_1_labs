@@ -21,14 +21,14 @@ class DualSimplexMethod:
         self.A_basis = self.get_A_basis()
         self.B = np.linalg.inv(self.A_basis)
         self.c_basis = self.get_c_basis()
-        print('====================Init=================================')
-        print(f'A = \n {str(self.A)}')
-        print(f'B = \n {str(self.B)}')
-        print(f'c = {str(self.c)}')
-        print(f'b = {str(self.b)}')
-        print(f'd_down = {str(self.d_down_asterisk)}')
-        print(f'd_up = {str(self.d_up_asterisk)}')
-        print('================End Init=================================')
+        # print('====================Init=================================')
+        # print(f'A = \n {str(self.A)}')
+        # print(f'B = \n {str(self.B)}')
+        # print(f'c = {str(self.c)}')
+        # print(f'b = {str(self.b)}')
+        # print(f'd_down = {str(self.d_down_asterisk)}')
+        # print(f'd_up = {str(self.d_up_asterisk)}')
+        # print('================End Init=================================')
 
         self.delta_rate = np.zeros(self.n)
         self.J_non_basis = None
@@ -175,40 +175,40 @@ class DualSimplexMethod:
 
     def solve(self):
         self.get_y_hatch()
-        print(f'y_hatch = {str(self.get_y_hatch())}')
+        # print(f'y_hatch = {str(self.get_y_hatch())}')
         self.get_delta_rate()
-        print(f'delta_rate = {str(self.delta_rate)}')
+        # print(f'delta_rate = {str(self.delta_rate)}')
         self.get_J_non_basis()
-        print(f'J_basis = {str(self.J_basis)}\n'
-              f'J_non_basis_minus = {str(self.J_non_basis_minus)}\n'
-              f'J_non_basis_plus = {str(self.J_non_basis_plus)}')
+        # print(f'J_basis = {str(self.J_basis)}\n'
+        #       f'J_non_basis_minus = {str(self.J_non_basis_minus)}\n'
+        #       f'J_non_basis_plus = {str(self.J_non_basis_plus)}')
         while True:
-            print('====================Next iteration=======================')
+            # print('====================Next iteration=======================')
             self.get_xi()
-            print(f'xi = {str(self.xi)}')
+            # print(f'xi = {str(self.xi)}')
             if not self.get_invalid_j_basis():
                 xi = [round(x, 4) for x in self.xi]
                 value = round(self.c.dot(self.xi), 4)
                 return xi, value
-            print(f'jk = {self.invalid_j[0]}, where k = {self.invalid_j[1]}')
+            # print(f'jk = {self.invalid_j[0]}, where k = {self.invalid_j[1]}')
             self.get_delta_y()
-            print(f'delta_y = {str(self.delta_y)}')
+            # print(f'delta_y = {str(self.delta_y)}')
             self.get_all_u()
-            print(f'u = {str(self.u)}')
+            # print(f'u = {str(self.u)}')
             self.get_sigmas()
             if not self.is_sigma_less_than_inf():
                 return None
-            print(f'sigma_0 = {str(self.sigma[-1])}')
+            # print(f'sigma_0 = {str(self.sigma[-1])}')
             self.get_new_rate()
-            print(f'new rate = {str(self.delta_rate)}')
+            # print(f'new rate = {str(self.delta_rate)}')
             self.get_new_J_basis()
-            print(f'J_basis = {str(self.J_basis)}\n'
-                  f'J_non_basis_minus = {str(self.J_non_basis_minus)}\n'
-                  f'J_non_basis_plus = {str(self.J_non_basis_plus)}')
+            # print(f'J_basis = {str(self.J_basis)}\n'
+            #       f'J_non_basis_minus = {str(self.J_non_basis_minus)}\n'
+            #       f'J_non_basis_plus = {str(self.J_non_basis_plus)}')
             self.get_A_basis()
-            print(f'A_basis = \n{str(self.A_basis)}')
+            # print(f'A_basis = \n{str(self.A_basis)}')
             self.get_B()
-            print(f'B = \n{str(self.B)}')
+            # print(f'B = \n{str(self.B)}')
 
 
 def main():
@@ -221,8 +221,8 @@ def main():
     d_up_asterisk = [7, 3, 2, 3, 4, 5]
     ds = DualSimplexMethod(A, c, b, d_down_asterisk, d_up_asterisk, [0, 1, 2])
     result = ds.solve()
-    print('====================Result==============================')
-    print(f'Result = {result}')
+    # print('====================Result==============================')
+    # print(f'Result = {result}')
 
 
 if __name__ == '__main__':
