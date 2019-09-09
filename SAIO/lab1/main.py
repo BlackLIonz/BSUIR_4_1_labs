@@ -1,5 +1,4 @@
 import numpy as np
-import math
 
 
 class DualSimplexMethod:
@@ -14,20 +13,21 @@ class DualSimplexMethod:
         self.m, self.n = self.A.shape
 
         self.J = list(range(0, self.n))
-        self.J_basis = self.J[3:]  # J[:3]
+        self.J_basis = self.J[self.m:]  # J[:3]
         self.A_basis = self.get_A_basis()
         self.B = np.linalg.inv(self.A_basis)
         self.c_basis = self.get_c_basis()
 
         self.delta_rate = np.zeros(self.n)
-        # self.J_nonbasis = None
-        # self.J_nonbasis_plus = None
-        # self.J_nonbasis_minus = None
-        # self.xi = None
-        # self.u = None
-        # self.invalid_j = None
-        # self.sigma = None
-        # self.delta_y = None
+        self.J_non_basis = None
+        self.J_non_basis_plus = None
+        self.J_non_basis_minus = None
+        self.xi = None
+        self.u = None
+        self.invalid_j = None
+        self.sigma = None
+        self.delta_y = None
+        self.j_asterisk = None
 
     def get_y_hatch(self):
         return self.c_basis.dot(self.B)
@@ -61,26 +61,27 @@ class DualSimplexMethod:
         return basis
 
     def get_J_nonbasis(self):
-        J_nonbasis = []
+        J_non_basis = []
         for i in range(len(self.J)):
             if not self.J[i] in self.J_basis:
-                J_nonbasis.append(self.J[i])
-        J_nonbasis_plus = []
-        J_nonbasis_minus = []
-        for j in J_nonbasis:
+                J_non_basis.append(self.J[i])
+        J_non_basis_plus = []
+        J_non_basis_minus = []
+        for j in J_non_basis:
             if self.delta_rate[j] >= 0:
-                J_nonbasis_plus.append(j)
+                J_non_basis_plus.append(j)
             else:
-                J_nonbasis_minus.append(j)
-        self.J_nonbasis, self.J_nonbasis_plus, self.J_nonbasis_minus = J_nonbasis, J_nonbasis_plus, J_nonbasis_minus
-        return J_nonbasis, J_nonbasis_plus, J_nonbasis_minus
+                J_non_basis_minus.append(j)
+        self.J_non_basis, self.J_non_basis_plus, self.J_non_basis_minus = \
+            J_non_basis, J_non_basis_plus, J_non_basis_minus
+        return J_non_basis, J_non_basis_plus, J_non_basis_minus
 
     def get_xi(self):
         xi = {}
         for j in self.J:
-            if j in self.J_nonbasis_minus:
+            if j in self.J_non_basis_minus:
                 xi[j] = self.d_up_asterisk[j]
-            elif j in self.J_nonbasis_plus:
+            elif j in self.J_non_basis_plus:
                 xi[j] = self.d_down_asterisk[j]
         basis_xi = self.get_basis_xi(xi)
         for i in range(len(self.J_basis)):
@@ -88,10 +89,10 @@ class DualSimplexMethod:
         self.xi = list(xi.values())
         return self.xi
 
-    def get_basis_xi(self, nonbasis_xi):
+    def get_basis_xi(self, non_basis_xi):
         sigma = 0
-        for j in self.J_nonbasis:
-            sigma = np.add(sigma, np.dot(self.A[:, j], nonbasis_xi[j]))
+        for j in self.J_non_basis:
+            sigma = np.add(sigma, np.dot(self.A[:, j], non_basis_xi[j]))
         return self.B.dot(np.subtract(self.b, sigma))
 
     def get_invalid_j_basis(self):
@@ -119,8 +120,8 @@ class DualSimplexMethod:
 
     def get_sigmas(self):
         sigma = {}
-        for j in self.J_nonbasis:
-            if (j in self.J_nonbasis_plus and self.u[j] < 0) or (j in self.J_nonbasis_minus and self.u[j] > 0):
+        for j in self.J_non_basis:
+            if (j in self.J_non_basis_plus and self.u[j] < 0) or (j in self.J_non_basis_minus and self.u[j] > 0):
                 sigma[j] = -self.delta_rate[j] / self.u[j]
             else:
                 sigma[j] = np.Inf
@@ -182,4 +183,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
