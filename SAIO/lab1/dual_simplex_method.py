@@ -1,4 +1,5 @@
 import numpy as np
+from collections import OrderedDict
 
 
 class DualSimplexMethod:
@@ -13,7 +14,7 @@ class DualSimplexMethod:
         self.m, self.n = self.A.shape
 
         self.J = list(range(0, self.n))
-        self.J_basis = self.J[self.m:]  # J[:3]
+        self.J_basis = self.J[-self.m:] # J[:3]
         self.A_basis = self.get_A_basis()
         self.B = np.linalg.inv(self.A_basis)
         self.c_basis = self.get_c_basis()
@@ -78,7 +79,7 @@ class DualSimplexMethod:
 
     def get_xi(self):
         xi = {}
-        for j in self.J:
+        for j in self.J_non_basis:
             if j in self.J_non_basis_minus:
                 xi[j] = self.d_up_asterisk[j]
             elif j in self.J_non_basis_plus:
@@ -86,7 +87,8 @@ class DualSimplexMethod:
         basis_xi = self.get_basis_xi(xi)
         for i in range(len(self.J_basis)):
             xi[self.J_basis[i]] = basis_xi[i]
-        self.xi = list(xi.values())
+        sort_xi = OrderedDict(sorted(xi.items()))
+        self.xi = list(sort_xi.values())
         return self.xi
 
     def get_basis_xi(self, non_basis_xi):
@@ -129,18 +131,25 @@ class DualSimplexMethod:
         return sigma
 
     def is_sigma_less_than_inf(self):
-        try:
-            sigma = self.sigma[self.sigma != np.inf].min()
-        except KeyError:
-            return
+        sigma = self.get_min_sigma()
         for index, value in self.sigma.items():  # for name, age in dictionary.iteritems():  (for Python 2.x)
             if value == sigma:
                 self.j_asterisk = index
+                break
         self.sigma[-1] = sigma
         if self.sigma[-1] < np.Inf:
             return True
         else:
             return False
+
+    def get_min_sigma(self):
+        sigma_zero = np.inf
+        for index, sigma in self.sigma.items():
+            if sigma == np.inf:
+                continue
+            if sigma < sigma_zero:
+                sigma_zero = sigma
+        return sigma_zero
 
     def get_new_J_basis(self):
         self.J_basis[self.invalid_j[0]] = self.j_asterisk
@@ -169,17 +178,24 @@ class DualSimplexMethod:
             self.get_B()
 
 
-def main():
-    A = np.array([[2, 1, -1, 0, 0, 1],
-                  [1, 0, 1, 1, 0, 0],
-                  [0, 1, 0, 0, 1, 0]])
-    c = np.array([3, 2, 0, 3, -2, -4])
-    b = np.array([2, 5, 0])
-    d_down_asterisk = [0, -1, 2, 1, -1, 0]
-    d_up_asterisk = [2, 4, 4, 3, 3, 5]
-    ds = DualSimplexMethod(A, c, b, d_down_asterisk, d_up_asterisk)
-    print(ds.solve())
-
-
-if __name__ == '__main__':
-    main()
+# def main():
+#     # A = np.array([[1, 0, 0, 12, 1, -3, 4, -1],
+#     #               [0, 1, 0, 11, 12, 3, 5, 3],
+#     #               [0, 0, 1, 1, 0, 22, -2, 1]])
+#     # c = np.array([2, 1, -2, -1, 4, -5, 5, 5])
+#     # b = np.array([40, 107, 61])
+#     # d_down_asterisk = [0, 0, 0, 0, 0, 0, 0, 0]
+#     # d_up_asterisk = [3, 5, 5, 3, 4, 5, 6, 3]
+#     A = np.array([[2, 1, -1, 0, 0, 1],
+#                   [1, 0, 1, 1, 0, 0],
+#                   [0, 1, 0, 0, 1, 0]])
+#     c = np.array([3, 2, 0, 3, -2, -4])
+#     b = np.array([2, 5, 0])
+#     d_down_asterisk = [0, -1, 2, 1, -1, 0]
+#     d_up_asterisk = [2, 4, 4, 3, 3, 5]
+#     ds = DualSimplexMethod(A, c, b, d_down_asterisk, d_up_asterisk)
+#     print(ds.solve())
+#
+#
+# if __name__ == '__main__':
+#     main()
