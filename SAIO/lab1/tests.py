@@ -1,7 +1,8 @@
 import unittest
-import numpy as np
 import sys
-import os
+
+import numpy as np
+
 from SAIO.lab1.dual_simplex_method import DualSimplexMethod
 
 sys.stdout = open("logger.txt", "w+")

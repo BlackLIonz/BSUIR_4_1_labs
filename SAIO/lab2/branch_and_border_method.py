@@ -49,7 +49,7 @@ class BranchBorderMethod:
                                                     task.d_down_asterisk, new_d_up))
 
         if self.solve_x:
-            return self.solve_x
+            return self.solve_x, self.r
 
 # if __name__ == '__main__':
 #    A = np.array([[1, -5, 3, 1, 0, 0],
