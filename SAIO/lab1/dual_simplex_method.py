@@ -2,7 +2,7 @@ import sys
 import numpy as np
 from collections import OrderedDict
 
-sys.stdout = open("logger.txt", "w+")
+# sys.stdout = open("logger.txt", "w+")
 
 
 class DualSimplexMethod:
@@ -214,7 +214,7 @@ class DualSimplexMethod:
 def main():
     A = np.array([[2, 1, 0, 3, -1, -1],
                   [0, 1, -2, 1, 0, 3],
-                  [3, 0, 1, 1, 1, 1]])
+                  [3, 0, 1, 1, 1, 1]],)
     c = np.array([0, -1, 1, 0, 4, 3])
     b = np.array([2, 2, 5])
     d_down_asterisk = [2, 0, -1, -3, 2, 1]
