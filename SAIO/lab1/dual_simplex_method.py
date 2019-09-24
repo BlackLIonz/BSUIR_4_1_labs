@@ -66,14 +66,16 @@ class DualSimplexMethod:
         return basis
 
     def get_A_basis(self):
+        n = 0
         while True:
             basis = np.ones((self.m, self.m))
             for i in range(self.m):
-                k = int(self.J_basis[i])
-                basis[:, i] = self.A[:, k]
+                k = int(self.J_basis[i + n])
+                basis[:, i + n] = self.A[:, k]
             self.A_basis = basis
             if np.linalg.det(self.A_basis) != 0:
                 break
+            n += 1
         return basis
 
     def get_J_non_basis(self):

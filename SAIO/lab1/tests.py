@@ -3,9 +3,9 @@ import sys
 
 import numpy as np
 
-from SAIO.lab1.dual_simplex_method import DualSimplexMethod
+from lab1.dual_simplex_method import DualSimplexMethod
 
-sys.stdout = open("logger.txt", "w+")
+# sys.stdout = open("logger.txt", "w+")
 
 
 class TestDualSimplexMethod(unittest.TestCase):
