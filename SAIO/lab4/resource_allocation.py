@@ -40,7 +40,7 @@ class ResourceAllocation:
             if process_number == 0:
                 self.plan.append(resurses)
                 return
-            x = self.x[(process_number, index)][0]
+            x = self.x.get((process_number, index), (0,))[0]
             resurses -= x
             self.plan.append(x)
             index = resurses
@@ -49,13 +49,13 @@ class ResourceAllocation:
         self._get_B()
         max_value, max_indexes = self._get_max_value()
         self._get_plan(max_indexes)
-        return self.plan[::-1]
+        return self.plan[::-1], self.B
 
 
-if __name__ == '__main__':
-    table = np.array([[0, 3, 4, 5, 8, 9, 10],
-                      [0, 2, 3, 7, 9, 12, 13],
-                      [0, 1, 2, 6, 11, 11, 13]])
-    task = ResourceAllocation(table)
-    plan = task.solve()
-    print(plan)
+# if __name__ == '__main__':
+#     table = np.array([[0, 3, 4, 5, 8, 9, 10],
+#                       [0, 2, 3, 7, 9, 12, 13],
+#                       [0, 1, 2, 6, 11, 11, 13]])
+#     task = ResourceAllocation(table)
+#     plan, _ = task.solve()
+#     print(plan)

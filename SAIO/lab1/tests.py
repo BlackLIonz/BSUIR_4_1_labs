@@ -1,9 +1,8 @@
 import unittest
-import sys
 
 import numpy as np
 
-from lab1.dual_simplex_method import DualSimplexMethod
+from SAIO.lab1.dual_simplex_method import DualSimplexMethod
 
 # sys.stdout = open("logger.txt", "w+")
 
@@ -110,6 +109,7 @@ class TestDualSimplexMethod(unittest.TestCase):
         d_up_asterisk = [2, 3, 1, 4, 3, 2, 4, 4]
         ds = DualSimplexMethod(A, c, b, d_down_asterisk, d_up_asterisk)
         self.assertEqual(([-1, 0.4074, 1, 4, -0.3704, 1.7407, 4, 4], 37.5555), ds.solve())
+
 
 
 if __name__ == '__main__':
