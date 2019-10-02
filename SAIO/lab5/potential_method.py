@@ -42,7 +42,21 @@ class PotentialMethod:
         key, value = self.node_zero
         graph = self.U_basis
         graph[key].append(value)
-        return [[node] + path for node in graph for path in self.dfs(graph)][:[]]
+        cycles = [[node] + path for node in graph for path in self.dfs(graph)]
+        for i in range(0, len(cycles), 2):
+            plus = self.get_edges(cycles[i])
+            minus = self.get_edges(cycles[i + 1])
+            if self.node_zero in plus or self.node_zero in minus:
+                self.U_plus = plus
+                self.U_minus = minus
+                break
+        return self.U_plus, self.U_minus
+
+    def get_edges(self, path):
+        edges = []
+        for i in range(1, len(path)):
+            edges.append((path[i - 1], path[i]))
+        return edges
 
     def dfs(self, graph, end=2):
         start = self.node_zero[0]
