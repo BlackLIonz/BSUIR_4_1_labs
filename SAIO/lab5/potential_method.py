@@ -3,18 +3,32 @@ from sortedcontainers import SortedDict
 
 
 class PotentialMethod:
-    def __init__(self, S, U_b, weights):
+    def __init__(self, S, U_b, weights, x):
         self.S = S
         self.U_basis = U_b
         self.U_non_basis = self.get_non_basis_edges()
         self.c = weights
+        self.x = x
         self.n = len(S)
         self.u = {1: 0}
         self.deltas = {}
         self.node_zero = None
+        self.U_plus = None
+        self.U_minus = None
+        self.teta = None
+
+    def get_non_basis_edges(self):
+        self.U_non_basis = {}
+        for key, values in self.S.items():
+            for value in values:
+                if value in self.U_basis[key]:
+                    continue
+                if not self.U_non_basis.get(key):
+                    self.U_non_basis[key] = []
+                self.U_non_basis[key].append(value)
+        return self.U_non_basis
 
     def get_u(self):
-        visited = [1]
         for edge, values in self.U_basis.items():
             for j in values:
                 if self.u.get(edge) is not None:
@@ -71,17 +85,8 @@ class PotentialMethod:
                     continue
                 fringe.append((next_state, path + [next_state]))
 
-
-    def get_non_basis_edges(self):
-        self.U_non_basis = {}
-        for key, values in self.S.items():
-            for value in values:
-                if value in self.U_basis[key]:
-                    continue
-                if not self.U_non_basis.get(key):
-                    self.U_non_basis[key] = []
-                self.U_non_basis[key].append(value)
-        return self.U_non_basis
+    def calculate_teta(self):
+        self.teta = min([self.x[edge] for edge in self.U_minus])
 
     def solve(self):
         self.get_u()
@@ -120,5 +125,16 @@ if __name__ == '__main__':
         (6, 3): 3,
         (6, 5): 4,
     }
-    pm = PotentialMethod(S, U_b, weights)
+    x = {
+        (1, 2): 1,
+        (2, 6): 0,
+        (3, 2): 3,
+        (3, 4): 1,
+        (5, 3): 0,
+        (5, 4): 5,
+        (6, 1): 0,
+        (6, 3): 9,
+        (6, 5): 0,
+    }
+    pm = PotentialMethod(S, U_b, weights, x)
     pm.solve()
