@@ -25,57 +25,93 @@ class Block:
         self.key = self._prepare_key(key)
 
     def encrypt(self):
-        a = self.text[0]
-        b = self.text[1]
-        c = self.text[2]
-        d = self.text[3]
-        for i in range(8):
+        a, b, c, d = self.text
+        for i in range(1, 9):
             b = self.xor(b, self.transformation_G(5, self.plus(a, self.key[(7*i - 6) % 8])))
             c = self.xor(c, self.transformation_G(21, self.plus(d, self.key[(7*i - 5) % 8])))
             a = self.minus(a, self.transformation_G(13, self.plus(d, self.key[(7*i - 4) % 8])))
-            e = self.xor(self.transformation_G(21, self.plus(self.plus(b, c), self.key[(7*i - 3) % 8])), i)
+            e = self.xor(self.transformation_G(21, self.plus(self.plus(b, c), self.key[(7*i - 3) % 8])),
+                         self.int_to_binary(i % 2 ** 32))
+            b = self.plus(b, e)
+            c = self.minus(c, e)
+            d = self.plus(d, self.transformation_G(13, self.plus(c, self.key[(7*i - 2) % 8])))
+            b = self.xor(b, self.transformation_G(21, self.plus(a, self.key[(7*i - 1) % 8])))
+            c = self.xor(c, self.transformation_G(5, self.plus(d, self.key[(7*i) % 8])))
+            a, b, c, d = c, a, d, b
+        Y = ''.join([a, b, c, d])
+        return Y
+
+    def decrypt(self, text):
+        a, b, c, d = self.chunk_it(text, 4)
+        for i in range(8, 0, -1):
+            b = self.xor(b, self.transformation_G(5, self.plus(a, self.key[(7 * i) % 8])))
+            c = self.xor(c, self.transformation_G(21, self.plus(d, self.key[(7 * i - 1) % 8])))
+            a = self.minus(a, self.transformation_G(13, self.plus(d, self.key[(7 * i - 2) % 8])))
+            e = self.xor(self.transformation_G(21, self.plus(self.plus(b, c), self.key[(7 * i - 3) % 8])),
+                         self.int_to_binary(i % 2 ** 32))
+            b = self.plus(b, e)
+            c = self.minus(c, e)
+            d = self.plus(d, self.transformation_G(13, self.plus(c, self.key[(7 * i - 4) % 8])))
+            b = self.xor(b, self.transformation_G(21, self.plus(a, self.key[(7 * i - 5) % 8])))
+            c = self.xor(c, self.transformation_G(5, self.plus(d, self.key[(7 * i - 6) % 8])))
+            a, b, c, d = b, d, a, c
+        Y = ''.join([a, b, c, d])
+        letters = self.chunk_it(Y, len(Y) / 8)
+
+        return Y
 
     def plus(self, a, b):
         res = (int(a, 2) + int(b, 2)) % 2 ** 32
-        return res
+        res_binary = self.int_to_binary(res)
+        return res_binary
 
     def minus(self, a, b):
         res = (int(a, 2) - int(b, 2)) % 2 ** 32
-        return res
+        res_binary = self.int_to_binary(res)
+        if len(res_binary) > 32:
+            raise ValueError('Binary minus bigger that 128')
+        return res_binary
 
     def xor(self, a, b):
-        a, b = int(a, 2), int(b, 2)
-        xor = a ^ b
-        return self.string_to_binary(str(xor))
+        xor = int(a, 2) ^ int(b, 2)
+        binary_xor = self.int_to_binary(xor)
+        return binary_xor
 
     def transformation_G(self, r, u):
         us = self.chunk_it(u, 4)
         res = []
-        # try another
         for u in us:
             h = self.get_H(u)
-            h = h << r
-            res.append(self.string_to_binary(str(h)))
-        return ''.join(res)
+            res.append(self.int_to_binary(h))
+        res = ''.join(res)
+        res = self.shift(res, r)
+        return res
 
-    def get_H(self, u):
-        hexed_u = hex(int(u, 2))
-        H_value = self.H[hexed_u[2], hexed_u[3]]
-        return H_value
+    @staticmethod
+    def shift(string, steps):
+        lst = string[steps:] + string[:steps]
+        return lst
 
-    def _prepare_key(self, key):
-        if len(key) * 8 > 256:
-            raise ValueError('Key to long')
-        return self.chunk_it(self.string_to_binary(key), 8)
-
-    def _prepare_text(self, text):
-        if len(text) * 8 > 128:
-            raise ValueError('Key to long')
-        return self.chunk_it(self.string_to_binary(text), 4)
+    @staticmethod
+    def int_to_binary(num):
+        binary_num = '{0:b}'.format(num)
+        if (len(binary_num) % 8) == 0:
+            binary_num = str(binary_num)
+        else:
+            binary_num = '0' * (8 - (len(binary_num) % 8)) + str(binary_num)
+        return binary_num
 
     @staticmethod
     def string_to_binary(string):
         return ''.join([f"0{format(ord(i), 'b')}" for i in string])
+
+    def get_H(self, u):
+        hexed_u = hex(int(u, 2))
+        a, b = hexed_u[-2:]
+        if a == 'x':
+            a = '0'
+        H_value = self.H[int(a, 16), int(b, 16)]
+        return H_value
 
     @staticmethod
     def chunk_it(seq, num):
@@ -87,6 +123,17 @@ class Block:
             last += avg
         return out
 
+    def _prepare_key(self, key):
+        if len(key) * 8 > 256:
+            raise ValueError('Key to long')
+        return self.chunk_it(self.string_to_binary(key), 8)
+
+    def _prepare_text(self, text):
+        if len(text) * 8 > 128:
+            raise ValueError('Text to long')
+        return self.chunk_it(self.string_to_binary(text), 4)
+
 
 block = Block('HelloWorldHelloW', 'SomeKeySomeKeySomeKeySomeKeySome')
-block.get_H('01101000')
+a = block.encrypt()
+print(a)
