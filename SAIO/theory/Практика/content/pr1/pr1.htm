@@ -1,0 +1,211 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <title>1. Двойственный метод решения задач линейного программирования с двухсторонними ограничениями</title>
+    <meta http-equiv="Content-Language" content="ru" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../../../Теория/css/textStyle.css">
+    <style>
+        img {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+    <div title="top" class="div-p-top">
+        <h1 class="Top">
+			<a href="../../practice.htm">[оглавление]</a>
+			<a href="../pr2/pr2.htm">[следующая тема]</a>
+		</h1>
+        <hr>
+        <p>&nbsp;</p>
+        <h1>1. Двойственный метод решения задач линейного программирования с двухсторонними ограничениями</h1>
+        <p>&nbsp;</p>
+        <hr>
+        <p>&nbsp;</p>
+    </div>
+
+    <div align="justify" style="margin-left:20px;">
+        <p><b>Пример 1.</b></p>
+        <p>Рассмотрим задачу линейного программирования следующего вида:</p>
+       <p class="title"><img src="../../images/pr1/m0.jpg" width="310"></p>
+        <p>где</p>
+     <p class="title"><img src="../../images/pr1/m1.jpg" width="700"></p>
+        <p>Решим данную задачу  двойственным методом. В качестве  начального базиса возьмем множество индексов <img src="../../images/pr1/m2.jpg"></p>
+        <p>Ему соответствует  базисная матрица <img src="../../images/pr1/m3.jpg" /></p>
+        <p>Матрицу, обратную к базисной, обозначим через <img src="../../images/pr1/m4.jpg" /></p>
+        
+
+
+
+        
+        <br>
+        <br>
+        <p><b>Итерация 1.</b></p>
+        
+        <p><b>1.</b> Найдем m-вектор</p>
+        <p class="title"><img src="../../images/pr1/m5.jpg" /></p>
+        <p>и оценки</p>
+       <p class="title"><img src="../../images/pr1/m6.jpg" /></p>
+        <p>сформируем множества</p>
+        <p class="title"><img src="../../images/pr1/m7.jpg" /></p>
+        
+        
+        <p><b>2.</b> Построим вектор <img src="../../images/pr1/m8.jpg" width="130"> по следующему правилу:</p>
+        <p class="title"><img src="../../images/pr1/m9.jpg" /> <a name="f1.1"class="right">(1)</a></p>
+        <p>В результате получим <img src="../../images/pr1/m10.jpg"></p>
+        
+        <p><b>3.</b> Проверяем, выполняются  ли соотношения (критерий оптимальности)</p>
+     <p class="title"><img src="../../images/pr1/m11.jpg" /></p>
+        <p>Для построенного псевдоплана эти соотношения не выполняются.  Поэтому переходим к следующему шагу.</p>
+
+        <p><b>4.</b> Найдем такой индекс <img src="../../images/pr1/m12.jpg" /> что <img src="../../images/pr1/m13.jpg" />.</p> 
+        <p>На данной итерации в качестве  такого индекса можно взять индекс <img src="../../images/pr1/m14.jpg"</p>
+
+        <p><b>5.</b> Поскольку <img src="../../images/pr1/m15.jpg" /> то полагаем <img src="../../images/pr1/m16.jpg" /></p>
+        <p>Подсчитаем m-вектор</p>
+     <p class="title"><img src="../../images/pr1/m17.jpg" /></p>
+        <p>и числа  <img src="../../images/pr1/m18.jpg" /></p>
+        <p class="title"><img src="../../images/pr1/m19.jpg" /></p>
+
+        <p><b>6.</b> Найдем шаги <img src="../../images/pr1/m20.jpg" /> по правилу:</p>
+       <p class="title"><img src="../../images/pr1/m21.jpg" width="500"></p>
+        <p>В результате получим  <img src="../../images/pr1/m22.jpg" /></p>
+        <p>Положим  <img src="../../images/pr1/m23.jpg" /> индекс, на котором достигается  минимум в последнем выражении.</p>
+        <p>Поскольку  <img src="../../images/pr1/m24.jpg" /> идем на шаг 7.</p>
+
+        <p><b>7.</b> Построим новый коплан <img src="../../images/pr1/m25.jpg" /> по правилу:</p>
+       <p class="title"><img src="../../images/pr1/m26.jpg" /></p>
+        <p>В результате получим  <img src="../../images/pr1/m27.jpg" /></p>
+
+        <p><b>8.</b> Построим новый базис  <img src="../../images/pr1/m28.jpg" /> соответствующую ему базисную матрицу </p>
+      <p class="title"><img src="../../images/pr1/m29.jpg" /></p>
+        <p>и обратную матрицу  <img src="../../images/pr1/m30.jpg" /></p>
+
+        <p><b>9.</b> Поcтроим новые множества   <img src="../../images/pr1/m31.jpg" /></p>
+      <p class="title"><img src="../../images/pr1/m32.jpg" /> <a name="f1.3"class="right">(2)</a></p>
+        <p>В результате получим  <img src="../../images/pr1/m33.jpg" /></p>
+        <p>Идем на шаг 2 следующей итерации, используя новые базис <img src="../../images/pr1/m34.jpg" />, коплан  <img src="../../images/pr1/m35.jpg" />, базисную матрицу <img src="../../images/pr1/m36.jpg" />  и обратную к ней матрицу <img src="../../images/pr1/m37.jpg" /></p>
+
+        <br/>
+        <br/>
+        <p><b>Итерация 2 </b></p>
+
+        <p><b>2.</b> Построим вектор    <img src="../../images/pr1/m38.jpg" /> по следующему правилу:</p>
+       <p class="title"><img src="../../images/pr1/m39.jpg" /></p>
+        <p>Получим  <img src="../../images/pr1/m40.jpg" /></p>
+        
+        <p><b>3.</b> Проверяем, выполняются  ли соотношения (критерий оптимальности)</p>
+       <p class="title"><img src="../../images/pr1/m41.jpg" /></p>
+        <p>Для построенного псевдоплана эти соотношения не выполняются.  Поэтому переходим к следующему шагу.</p>
+
+        <p><b>4.</b> Найдем такой индекс <img src="../../images/pr1/m12.jpg" /> что <img src="../../images/pr1/m13.jpg" />.</p> 
+        <p>На данной итерации в качестве  такого индекса можно взять индекс <img src="../../images/pr1/m42.jpg"</p>
+
+        <p><b>5.</b> Поскольку <img src="../../images/pr1/m43.jpg" /> то полагаем <img src="../../images/pr1/m44.jpg" /></p>
+        <p>Подсчитаем m-вектор</p>
+       <p class="title"><img src="../../images/pr1/m45.jpg" /></p>
+        <p>и числа  <img src="../../images/pr1/m46.jpg" /></p>
+        <p><img src="../../images/pr1/m47.jpg" /></p>
+
+        <p><b>6.</b> Найдем шаги <img src="../../images/pr1/m20.jpg" /> по правилу:</p>
+       <p class="title"><img src="../../images/pr1/m21.jpg" width="500"></p>
+        <p>В результате получим  <img src="../../images/pr1/m48.jpg" /></p>
+        <p>Положим  <img src="../../images/pr1/m49.jpg" /> индекс, на котором достигается  минимум в последнем выражении.</p>
+        <p>Поскольку  <img src="../../images/pr1/m50.jpg" /> идем на шаг 7.</p>
+
+        <p><b>7.</b> Построим новый коплан <img src="../../images/pr1/m51.jpg" /> по правилу:</p>
+  <p class="title"><img src="../../images/pr1/m52.jpg" /></p>
+        <p>В результате получим  <img src="../../images/pr1/m53.jpg" /></p>
+
+        <p><b>8.</b> Построим новый базис  <img src="../../images/pr1/m54.jpg" /> соответствующую ему базисную матрицу </p>
+        <p class="title"><img src="../../images/pr1/m55.jpg" /></p>
+        <p>и обратную матрицу  <img src="../../images/pr1/m56.jpg" /></p>
+
+        <p><b>9.</b> Поcтроим новые множества   <img src="../../images/pr1/m57.jpg" /> по правилам, аналогичным <a href="#f1.3">(2)</a></p>
+        <p>В результате получим  <img src="../../images/pr1/m58.jpg" /></p>
+        <p>Идем на шаг 2 следующей итерации, используя новые базис <img src="../../images/pr1/m59.jpg" />, коплан  <img src="../../images/pr1/m60.jpg" />, базисную матрицу <img src="../../images/pr1/m61.jpg" />  и обратную к ней матрицу <img src="../../images/pr1/m62.jpg" /></p>
+
+
+
+
+        <br/>
+        <br/>
+        <p><b>Итерация 3 </b></p>
+        <p><b>2.</b> Построим вектор    <img src="../../images/pr1/m63.jpg" /> по следующему правилу:</p>
+       <p class="title"><img src="../../images/pr1/m64.jpg" /></p>
+        <p>Получим  <img src="../../images/pr1/m65.jpg" /></p>
+        
+        p><b>3.</b> Для построенного псевдоплана  выполняются соотношения (критерий оптимальности)</p>
+       <p class="title"><img src="../../images/pr1/m66.jpg" /></p>
+        <p> Следовательно, этот  псевдоплан является оптимальным планом исходной задачи линейного программирования.</p>
+        <p>Ответ: <img src="../../images/pr1/m67.jpg" /></p>
+
+
+
+
+        <br/>
+        <br/>
+        <p><b>ЗАДАЧИ ДЛЯ САМОСТОЯТЕЛЬНОГО РЕШЕНИЯ</b></p>
+        <p>Решить задачи линейного программирования с двухсторонними ограничениями </p>
+        <p><img src="../../images/pr1/m68.jpg" width="300"></p>
+        <p>двойственным методом.</p>
+        
+        <p><b>Задача 1.</b></p>
+        <p><img src="../../images/pr1/m69.jpg" width="450"></p>
+        <p>Ответ:</p>
+        <p>Оптимальный план  <img src="../../images/pr1/m70.jpg" width="180"> Значение целевой функции:  67.</p>
+        
+        <p><b>Задача 2.</b></p>
+        <p><img src="../../images/pr1/m71.jpg" width="450"></p>
+        <p>Ответ:</p>
+        <p>Оптимальный план  <img src="../../images/pr1/m72.jpg" width="280"> Значение целевой функции:  36.2727.</p>
+
+
+        <p><b>Задача 3.</b></p>
+        <p><img src="../../images/pr1/m73.jpg" width="500"></p>
+        <p>Ответ:</p>
+        <p>Оптимальный план  <img src="../../images/pr1/m74.jpg" width="330"> Значение целевой функции:  49.6577.</p>
+        <p>По заданному множеству J<sub>Б</sub>={1 3 5 8} сформируем матрицы и вектор </p>
+
+        <p><b>Задача 4.</b></p>
+        <p><img src="../../images/pr1/m75.jpg" width="520"></p>
+        <p>Ответ:</p>
+        <p>Оптимальный план  <img src="../../images/pr1/m76.jpg" width="430"> Значение целевой функции:  38.7218.</p>
+
+        <p><b>Задача 5.</b></p>
+        <p><img src="../../images/pr1/m77.jpg" width="500"></p>
+        <p>Ответ:</p>
+        <p>задача не имеет решения, т.к. в ней множество допустимых планов пусто.</p>
+
+        <p><b>Задача 6.</b></p>
+        <p><img src="../../images/pr1/m78.jpg" width="500"></p>
+        <p>Ответ:</p>
+        <p>Оптимальный план  <img src="../../images/pr1/m79.jpg" width="300"> Значение целевой функции:  1.5.</p>
+
+        <p><b>Задача 7.</b></p>
+        <p><img src="../../images/pr1/m80.jpg" width="500"></p>
+        <p>Ответ:</p>
+        <p>задача не имеет решения, т.к. в ней множество допустимых планов пусто.</p>
+
+        <p><b>Задача 8.</b></p>
+        <p><img src="../../images/pr1/m81.jpg" width="520"></p>
+        <p>Ответ:</p>
+        <p>Оптимальный план  <img src="../../images/pr1/m82.jpg" width="400"> Значение целевой функции:  37. 5556.</p>
+
+
+
+    </div>
+
+    <div title="Bottom">
+        <p>&nbsp;</p>
+        <hr size="2" width="100%" align="center">
+        <h1 class="Bottom">
+			<a href="../../practice.htm">[назад]</a>
+		</h1>
+    </div>
+</body>
+
+</html>

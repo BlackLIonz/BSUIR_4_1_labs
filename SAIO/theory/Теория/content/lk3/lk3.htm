@@ -1,0 +1,1905 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Тема 4 Кратчайшие пути</title>
+    <meta http-equiv="Content-Language" content="ru" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../../css/textStyle.css">
+		<script type="text/javascript" src="http://latex.codecogs.com/latexit.js"></script>
+    
+</head>
+
+<body>
+    <div title="top" class="div-p-top">
+        <h1 class="Top">
+            <a href="../lk6/lk6.htm">[предыдущая тема]</a>
+            <a href="../../theory.htm">[оглавление]</a>
+            <a href="../lk4/lk4.htm">[следующая тема]</a>
+        </h1>
+        <hr>
+        <p>&nbsp;</p>
+        <h1>Тема 4 Кратчайшие пути</h1>
+        <p>&nbsp;</p>
+        <hr>
+        <p>&nbsp;</p>
+    </div>
+    <p>
+        &emsp;<a href="#t1">4.1 Задача о кратчайшем пути</a>
+        <br/> &emsp; &emsp;<a href="#t1.1">4.1.1 Поиск кратчайшего пути и задача о потоке минимальной стоимости</a>
+        <br/> &emsp; &emsp;<a href="#t1.2">4.1.2 Построение  кратчайшего пути на сети с неотрицательными длинами дуг</a>
+        <br/> &emsp; &emsp;<a href="#t1.3">4.1.3 Метод пометок</a>
+        <br/> &emsp; &emsp;<a href="#t1.4">4.1.4 Алгоритм Дейкстры</a>
+        <br/> &emsp; &emsp;<a href="#t1.5">4.1.5 Построение дерева кратчайших путей</a>
+        <br/> &emsp; &emsp;<a href="#t1.6">4.1.6 Aлгоритм построения дерева кратчайших путей</a>
+        <br/> &emsp;
+
+        <a href="#t2">4.2 Кратчайшие пути между всеми парами вершин (задача о многополюсной кратчайшей цепи)</a>
+        <br/> &emsp; &emsp;<a href="#t2.1">4.2.1. Обоснование метода решения с помощью динамического программирования</a>
+        <br/> &emsp; &emsp;<a href="#t2.2">4.2.2. Алгоритм Флойда</a>
+        <br/> &emsp; &emsp;<a href="#t2.3">4.2.3. Пример</a>
+        <br/>
+    </p>
+    <br>
+<div  align="justify" style="font-size: 14pt;"> 
+
+
+
+<br>
+
+Рассмотрим <i>сеть (ориентированную) </i>
+<div* lang="latex">S=\{ I,U\} </div*>
+ со множеством узлов 
+<div* lang="latex">I</div*>
+ и дуг 
+<div* lang="latex">U</div*>.
+ Каждой ориентированной дуге 
+<div* lang="latex">(i,j)\in U</div*>
+ поставим в соответствие пару точек 
+<div* lang="latex">\{ i,j\} </div*>,
+ которую назовем 
+<b>ребром</b>
+ с граничными узлами 
+<i>i </i> и <i>j.</i>
+
+<br> &emsp;Последовательность различных ребер
+
+<br>
+<br>
+<div lang="latex"  align="center">\{ i_{1} ,i_{2} \} ,{\rm \; \; }\{ i_{2} ,i_{3} \} ,{\rm \; \; }...,{\rm \; \; \; }\{ i_{k-1} ,i_{k} \} 
+</div> 
+<br>
+
+
+называется (простой) цепью, соединяющей узлы 
+<div* lang="latex">i_{1} </div*>
+ и 
+<div* lang="latex">i_{k}.</div*>
+
+
+ 
+<br> &emsp;Пусть данная цепь рассматривается в направлении от узла 
+<div* lang="latex">i_{1} </div*>
+ к узлу 
+<div* lang="latex">i_{k}. </div*>
+ Если это направление совпадает с направлением 
+<div* lang="latex">i\to j</div*>
+ дуги 
+<div* lang="latex">(i,j)</div*>
+ в этой цепи, то дуга
+ <div* lang="latex">(i,j)</div*>
+ называется <i>прямой</i>. Дуга с противоположным направлением называется <i>обратной.</i>
+
+<br> &emsp;<i>Путем</i> из узла 
+<div* lang="latex">s\in I</div*>
+в узел 
+<div* lang="latex">t\in I</div*>
+ называется простая цепь, соединяющая 
+<i>s</i> и <i>t</i>, 
+при этом все дуги цепи являются прямыми при движении из <i>s</i> в <i>t</i>.
+
+
+<br> &emsp;Цепь (путь) 
+<br>
+<br>
+<div lang="latex"  align="center">\{ i_{1} ,i_{2} \} ,{\rm \; \; }\{ i_{2} ,i_{3} \} ,{\rm \; \; }...,{\rm \; \; \; }\{ i_{k-1} ,i_{k} \} </div>
+<br>
+
+ с совпадающими узлами 
+<div* lang="latex">i_{1} </div*>
+и 
+<div* lang="latex">i_{k} </div*>: 
+<div* lang="latex">i_{1} =i_{k} </div*>
+ называется <i>циклом (контуром)</i>.
+
+<br> &emsp;Каждой дуге 
+<div* lang="latex">(i,j)\in U</div*>
+ припишем некоторый параметр 
+<div* lang="latex">c_{ij} </div*>
+ («стоимость»), который определяет длину дуги 
+<div* lang="latex">(i,j)</div*>. 
+
+<br> &emsp;В этом случае под длиной пути будем понимать сумму длин дуг, образующих данный путь.
+<br>
+
+<br> &emsp;В 
+ данной главы изучается задача о нахождении кратчайшего (минимального) пути из фиксированного узла <i>s</i> в другой заданный узел <i>t</i>
+ или во все другие узлы сети. В последнем случае говорят о задаче построения дерева кратчайших путей. Следует различать три случая:
+
+<br>
+<br>
+
+<br> &emsp;1. Все дуги сети имеют неотрицательную длину.
+
+<br> &emsp;2. Некоторые дуги имеют отрицательную длину, но в сети не существует контуров с суммарной отрицательной длиной.
+
+<br> &emsp;3. В сети существует один или несколько контуров с отрицательной суммарной длиной.
+
+<br> &emsp;В третьем случае задача о построении кратчайшего пути из <i>s</i> в <i>t</i> может не иметь решения. 
+(Задача будет иметь решение только в том случае, если нет ни одного пути из <i>s</i> в узел <i>i</i>, принадлежащий контуру с отрицательной длиной.) 
+В таких ситуациях используются алгоритмы, позволяющие обнаружить и указать контуры с отрицательной длиной.
+
+<br> &emsp;Заметим, что отсутствие в сети 
+<div* lang="latex">S=\{ I,U\} </div*> контуров отрицательной длины и существование пути из
+<div* lang="latex">i</div*>
+ в
+<div* lang="latex">j</div*> для любых 
+<div* lang="latex">i, \ j \in I,</div*>
+ являются необходимыми и достаточными условиями существования кратчайшего пути из любого узла 
+<div* lang="latex">i\in I</div*> 
+в любой узел 
+<div* lang="latex">j\in I.</div*>
+
+<br> &emsp;Второй параграф данной главы посвящен построению кратчайших путей между всеми парами узлов заданной сети.
+
+<br>
+  <br>
+
+    <p class="title"><a name="t1"><b>4.1 Задача о кратчайшем пути</b></a></p>
+    <p class="title"><a name="t1.1"><b>4.1.1. Поиск кратчайшего пути и задача о потоке минимальной стоимости</b></a></p>
+
+<br> &emsp;Покажем, что задача построения кратчайших путей из заданного узла 
+<div* lang="latex">s</div*>
+ во все другие узлы 
+<div* lang="latex">i\in I\setminus s</div*> 
+сети 
+<div* lang="latex">S=\{ I,U\} </div*>
+ является частным случаем задачи о потоке минимальной стоимости (см. раздел <a href="../lk6/lk6.htm">[Задача о потоке минимальной стоимости]</a>).
+
+
+
+, которая, в свою очередь, является частным случаем задачи линейного программирования.
+
+<br> &emsp;Рассмотрим задачу построения кратчайших путей из узла 
+<div* lang="latex">s</div*>
+ в узлы 
+<div* lang="latex">i\in I\setminus s</div*>.
+
+ <br> &emsp;Покажем, что эта задача эквивалентна следующей задаче о потоке минимальной стоимости на сети 
+<div* lang="latex">S=\{ I,U\} </div*>:
+
+
+<br>
+    <br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%"><img id="(1)">
+<div  align="center">
+
+<div lang="latex">\sum _{\left(i,j\right)\in U}c_{ij}  x_{ij} \to \min ,\quad </div>
+<div lang="latex">\sum _{j\in I_{i}^{+} }x_{ij}  -\sum _{j\in I_{i}^{-} }x_{ji}  =a_{i} ,\quad i\in I,</div>
+<div lang="latex">x_{ij} \ge 0,\quad \left(i,j\right)\in U,\quad</div>
+</div>
+</td>
+      <td width="2%">(1)</td>
+    </tr>
+  </table>
+
+
+<br>
+
+
+ где    
+
+
+<br>
+    <br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%"><img id="(2)">
+<div   align="center">
+
+<div lang="latex">I_{i}^{+} =\{ j\in I:(i,j)\in U\} ;{\rm \; \; }\, {\rm \; }I_{i}^{-} =\{ j\in I:(j,i)\in U\} ;</div>
+<div lang="latex">a_{s} =n-1;{\rm \; \; }a_{i} =-1,{\rm \; \; }i\in I\setminus{\; }n=\left|I\right|.</div>       
+</div>
+</td>
+      <td width="2%">(2)</td>
+    </tr>
+  </table>
+
+
+<br>
+
+<br> &emsp;С учетом того, что все числа 
+<div* lang="latex">a_{i} ,i\in I,</div*>
+ -- целые, можно показать, что задача <a href="#(1)">(1)</a>    имеет оптимальный целочисленный поток.
+ 
+<br> &emsp;Ранее в курсе методов оптимизации 
+было доказано, что если в задаче <a href="#(1)">(1)</a>   существует оптимальный поток, то для нее найдется и оптимальный 
+<b>базисный</b> поток, который определяется следующими свойствами: пусть 
+<div* lang="latex">x^{0} =(x_{ij}^{0} ,(i,j)\in U)</div*>
+ -- оптимальный базисный поток, тогда существует такое базисное множество (являющееся деревом) 
+<div* lang="latex">U_{B}^{0} \subset U,</div*> 
+что
+
+
+
+<br>
+    <br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%"><img id="(3)">
+<div lang="latex"  align="center">
+x_{ij}^{0} \ge 0, \; \; (i,j)\in U_{B}^{0} ,{ \; \; }x_{ij}^{0} =0,{ \; \; }
+(i,j)\in U\setminus U_{B}^{0} .  
+</div>
+</td>
+      <td width="2%">(3)</td>
+    </tr>
+  </table>
+
+
+<br>
+
+
+
+
+
+
+<br> &emsp; В силу специального подбора чисел 
+<div* lang="latex">a_{i} ,i\in I</div*>, 
+можно утверждать, что 
+<div* lang="latex">x_{ij}^{0} >0</div*>
+ (и даже 
+<div* lang="latex">x_{ij}^{0} \ge 1</div*>
+), если 
+<div* lang="latex">(i,j)\in U_{B}^{0}.</div*>
+
+<br> &emsp;Покажем, что базисное множество 
+<div* lang="latex">U_{B}^{0} </div*> 
+и будет деревом кратчайших путей из 
+<div* lang="latex">s</div*>
+ в 
+<div* lang="latex">j\in I\setminus s.</div*> 
+
+<br> &emsp;Действительно, выше отмечалось, что множество 
+<div* lang="latex">U_{B}^{0} </div*> является деревом. 
+Из свойств дерева следует, что для любого узла 
+<div* lang="latex">j_{*} \in I\setminus s</div*> 
+существует единственная цепь, принадлежащая 
+<div* lang="latex">U_{B}^{0} </div*>
+ и соединяющая 
+<div* lang="latex">s</div*> 
+и 
+<div* lang="latex">j_{*} </div*>. 
+
+<br> &emsp;В силу <a href="#(3)">(3)</a>   ненулевые потоки могут быть только на дугах дерева 
+<div* lang="latex">U_{B}^{0} </div*>.
+ У нас только один узел-источник (с 
+<div* lang="latex">a_{i} >0</div*>
+) -- это узел 
+<div* lang="latex">s</div*>. 
+
+<br> &emsp;Значит, единичный поток, который попадает в узел 
+<div* lang="latex">j_{*} </div*> с 
+<div* lang="latex">a_{j_{*} } =-1 &lt; 0</div*>,
+ приходит в узел 
+<div* lang="latex">j_{*} </div*> 
+из узла 
+<div* lang="latex">s</div*>. 
+Следовательно, все дуги упомянутой цепи должны быть прямыми. Значит, эта цепь является путем из
+ <div* lang="latex">s</div*>
+ в 
+<div* lang="latex">j_{*} </div*>. 
+
+<br> &emsp;Обозначим дуги этого пути через
+ <div* lang="latex">U(j_*)\subset U_{B}^{0} </div*>. Так как из 
+<div* lang="latex">s</div*>
+ в 
+<div* lang="latex">j_{*} </div*>
+ вдоль пути 
+<div* lang="latex">U(j_{*}) </div*>
+ идет единица потока, то по построению 
+<div* lang="latex">x_{ij}^{0} \ge 1,\, \, \, (i,j)\in U(j_{*}) </div*>.
+ 
+<br>
+<br> &emsp;Предположим, что существует другой путь из
+ <div* lang="latex">s</div*>
+ в 
+<div* lang="latex">j_{*} </div*>
+ меньшей длины, т.е. существует такой путь 
+<div* lang="latex">\bar U(j_{*}) </div*>, 
+что
+
+
+
+<br>
+    <br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%"><img id="(4)">
+<div lang="latex"  align="center">
+\sum _{(i,j)\in \bar{U}(j_{*}) }c_{ij}  &lt;\sum _{(i,j)\in U(j_{*}) }c_{ij}  . 
+</div>
+</td>
+      <td width="2%">(4)</td>
+    </tr>
+  </table>
+
+
+<br> 
+
+
+<br> &emsp;Построим новый поток 
+
+<div* lang="latex">x^{*} =(x_{ij}^{*} ,(i,j)\in U)</div*>
+ в сети
+<div* lang="latex">S</div*>:
+
+<br>
+<br>
+
+<div align="center">
+<div* lang="latex"> {x_{ij}^{*} =x_{ij}^{0} +1,</div*> 
+если 
+<div* lang="latex">(i,j)\in \bar U(j_{*}) ,\; \; (i,j)\notin U(j_{*}) ,</div*></div>
+<br>
+
+
+
+<div  align="center">
+ <div* lang="latex"> x_{ij}^{*} =x_{ij}^{0} -1,</div*> 
+ если 
+<div* lang="latex"> (i,j)\notin \bar U(j_{*}) ,\; \; (i,j)\in U(j_{*}),</div*></div>
+<br>
+
+<div  align="center">
+ <div* lang="latex">{x_{ij}^{*} =x_{ij}^{0} </div*> для остальных дуг  <div* lang="latex">(i,j)\in U.</div*> </div>
+<br>
+<br>
+
+
+<br> &emsp; Нетрудно проверить, что 
+<div* lang="latex">x^{*} </div*>
+ -- допустимый поток в сети 
+<div* lang="latex">S</div*>, 
+причем
+
+ 
+<br>
+<br>
+<div lang="latex"  align="center">
+\sum _{(i,j)\in U}c_{ij}  (x_{ij}^{*} -x_{ij}^{0} )=\sum _{(i,j)\in \bar{U}_{{\rm }}^{j_{*} } }c_{ij}  -\sum _{(i,j)\in U_{{\rm }}^{j_{*} } }c_{ij}  &lt; 0.</div>
+<br>
+<br>
+
+
+Однако последнее неравенство противоречит оптимальности потока 
+<div* lang="latex">x^{0} </div*>
+ в сети
+<div* lang="latex">S</div*>.
+
+<br>
+<br> &emsp;Таким образом, мы показали, что, решив задачу <a href="#(1)">(1)</a>  , <a href="#(2)">(2)</a>  , мы находим дерево 
+<div* lang="latex">U_{B}^{0} </div*>
+ (оптимальный базис, соответствующий потоку минимальной стоимости), которое является деревом кратчайших путей из 
+<div* lang="latex">s</div*> 
+в узлы 
+<div* lang="latex">j\in I\setminus s.</div*>
+<br>
+<br> &emsp; Следовательно, для построения дерева кратчайших путей можно использовать метод потенциалов, рассмотренный ранее в  
+ разделе <a href="../lk6/lk6.htm">[Задача о потоке минимальной стоимости]</a>.
+
+<br> &emsp;
+Заметим, что задача <a href="#(1)">(1)</a>, <a href="#(2)">(2)</a>  
+ является частным случаем общей задачи о потоке минимальной стоимости. 
+Специфика задачи <a href="#(1)">(1)</a>  , <a href="#(2)">(2)</a>   состоит в специальной структуре интенсивностей 
+<div* lang="latex">a_{i} ,i\in I.</div*> 
+
+<br> &emsp;
+Кроме того, мы получим дополнительную специфику, если, например, предположим, что 
+<div* lang="latex">c_{ij} \ge 0,{\rm \; \; }(i,j)\in U.</div*> 
+Учет этой специфики позволяет разработать специальные методы, учитывающие особенности данной задачи. Рассмотрим некоторые из таких методов.
+
+
+
+<br>
+  <br>
+  <p class="title"><a name="t1.2"><b>4.1.2 Построение  кратчайшего пути на сети с неотрицательными длинами дуг</b></a></p>
+	
+	
+	
+<br> &emsp;Пусть задана сеть 
+<div* lang="latex">S=\{ I,U\} </div*> 
+со множеством узлов 
+<div* lang="latex">I</div*>
+ и множеством дуг 
+<div* lang="latex">U</div*>.
+ На дугах 
+<div* lang="latex">(i,j)\in U</div*> 
+заданы характеристики 
+<div* lang="latex">c_{ij} \ge 0,\; (i,j)\in U</div*>,
+ где 
+<div* lang="latex">c_{ij} </div*>
+-- длина дуги 
+<div* lang="latex">(i,j)</div*>.
+ Требуется для двух фиксированных узлов 
+<div* lang="latex">s,t\in I</div*> 
+найти путь из 
+<div* lang="latex">s</div*>
+ в 
+<div* lang="latex">t</div*> минимальной длины.
+
+
+<br> &emsp;Используем метод динамического программирования для построения и обоснования специального алгоритма нахождения кратчайших путей.
+ 
+<br>
+<br> &emsp;Вложим задачу построения кратчайшего пути из узла <div* lang="latex">s</div*> в узел <div* lang="latex">t</div*> в семейство аналогичных задач. 
+Общая задача семейства состоит в построении кратчайшего пути из <div* lang="latex">s</div*> в произвольный узел 
+<div* lang="latex">j\in I\setminus  s.</div*>
+ 
+<br> &emsp;Обозначим через 
+<div* lang="latex">B_{j} </div*> 
+функцию Беллмана -- длину кратчайшего пути из 
+<div* lang="latex">s</div*>
+ в 
+<div* lang="latex">j.</div*>
+
+<br> &emsp;Для составления уравнения, которому удовлетворяет функция Беллмана 
+<div* lang="latex">B_{j} </div*>,
+ в пути из 
+ <div* lang="latex">s </div*>
+ в 
+ <div* lang="latex">j </div*>
+ в качестве последней дуги выберем произвольную дугу <div* lang="latex">(i,j)\in U,i\in I_{j}^{-} </div*>, и предположим, что в узел 
+ <div* lang="latex">i</div*>
+ мы
+ пришли кратчайшим путем, т.е. длина пути из 
+ <div* lang="latex">s </div*>
+ в 
+ <div* lang="latex">i </div*>
+ равна 
+<div* lang="latex">B_{i} </div*>. Здесь
+
+<br>
+<br>
+<div lang="latex"  align="center">I_{i}^{-} =\{ j\in I:(j,i)\in U\} .</div>
+<br>
+<br>
+
+Очевидно, что длина минимального пути из <div* lang="latex">s </div*> в <div* lang="latex">j</div*> через узел 
+
+<div* lang="latex">I\in I_{j}^{-} </div*> равна
+
+
+<br>
+    <br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%"><img id="(5)">
+<div lang="latex"  align="center">
+c_{ij} +B_{i} ,i\in I_{j}^{-} . 
+</div>
+</td>
+      <td width="2%">(5)</td>
+    </tr>
+  </table>
+
+
+<br>
+
+<br> &emsp;Ясно, что в узел 
+<div* lang="latex">j</div*> 
+ из 
+<div* lang="latex">s</div*> мы можем попасть, только пройдя через какой-либо узел 
+
+<div* lang="latex">i\in I_{j}^{-} </div*>.
+ Нас интересует кратчайший путь, поэтому в <a href="#(5)">(5)</a>   найдем минимум:
+
+
+<br>
+    <br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%"><img id="(6)">
+<div lang="latex"  align="center"> 
+\mathop{\min }\limits_{i\in I_{j}^{-} } \, {\rm (}c_{ij} +B_{i} ). 
+</div>
+</td>
+      <td width="2%">(6)</td>
+    </tr>
+  </table>
+
+
+<br> 
+
+<br> &emsp;Ясно, что <a href="#(6)">(6)</a>   -- длина кратчайшего пути из 
+<div* lang="latex">s</div*>
+ в 
+<div* lang="latex">j</div*>
+, т.е.
+
+
+<br>
+    <br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%"><img id="(7)">
+<div lang="latex"  align="center">
+B_{j} ={\rm \; }\mathop{\min }\limits_{i\in I_{j}^{-} } \, {\rm (}c_{ij} +B_{i} ). 
+</div>
+</td>
+      <td width="2%">(7)</td>
+    </tr>
+  </table>
+
+
+<br>
+
+<br> &emsp;Краевое условие для уравнения Беллмана <a href="#(7)">(7)</a>   имеет вид
+
+
+<br>
+    <br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%"><img id="(8)">
+<div lang="latex"  align="center">
+B_{s} =0. 
+</div>
+</td>
+      <td width="2%">(8)</td>
+    </tr>
+  </table>
+
+
+<br>
+
+<br> &emsp; Уравнение Беллмана <a href="#(7)">(7)</a>   не является рекуррентным. Однако этому уравнению можно придать рекуррентный характер.
+
+<br>
+<br> &emsp;Обозначим через 
+<div* lang="latex">I_{*} </div*> 
+множество узлов сети <div* lang="latex">S </div*>, для которых функция Беллмана 
+<div* lang="latex">B_{i} </div*> 
+уже построена. Очевидно, что 
+<div* lang="latex">I_{*} \not=\emptyset</div*>,
+ так как по построению 
+<div* lang="latex">s\in I_{*} .</div*> 
+
+<br> &emsp;Если 
+<div* lang="latex">t\in I_{*} </div*>,
+ то исходная задача решена, 
+<div* lang="latex">B_{t} </div*> 
+-- длина минимального пути из
+<div* lang="latex">s</div*>
+ в 
+<div* lang="latex">t</div*>. 
+Сам путь можно восстановить «обратным ходом» алгоритма (см. ниже).
+
+<br> &emsp;Пусть 
+<div* lang="latex">t\notin I_{*} </div*>.
+ В сети 
+<div* lang="latex">S</div*>
+ по множеству 
+<div* lang="latex">I_{*} </div*>
+ построим разрез
+<br>
+<br>
+<div lang="latex"  align="center">U(I_{*} )=\{ (i,j)\in U:i\in I_{*} ,j\notin I_{*} \} .</div>
+<br>
+<br> 
+
+<br> &emsp;Предположим, что 
+<div* lang="latex">U(I_{*} )\not=\emptyset</div*>.
+ Ясно, что каждый путь из <div* lang="latex">s </div*> в узел 
+<div* lang="latex">k\notin I_{*} </div*> 
+содержит хотя бы одну дугу из множества 
+<div* lang="latex">U(I_{*} )</div*>. 
+
+<br> &emsp;Следовательно, в силу того, что 
+<div* lang="latex">c_{ij} \ge 0,(i,j)\in U</div*>,
+ для любого 
+<div* lang="latex">k\notin I_{*} </div*>
+справедливо неравенство
+
+
+<br>
+    <br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%"><img id="(9)">
+<div lang="latex"  align="center">
+B_{k} \ge \mathop{\min }\limits_{(i,j)\in U(I_{*} )} (B_{i} +c_{ij} )=B_{i_{*} } +c_{i_{*} j_{*} } ,{\rm \; \; \; }k\notin I_{*} . 
+</div>
+</td>
+      <td width="2%">(9)</td>
+    </tr>
+  </table>
+
+
+<br>
+
+Поскольку 
+<div* lang="latex">(i_{*} ,j_{*} )</div*>
+ -- дуга разреза 
+<div* lang="latex">U(I_{*} )</div*>,
+ то 
+<div* lang="latex">i_{*} \in I_{*} ,j_{*} \notin I_{*} </div*>.
+
+
+ <br> &emsp;В <a href="#(9)">(9)</a>   положим 
+<div* lang="latex">k=j_{*} </div*>. 
+Тогда, согласно <a href="#(9)">(9)</a>  , имеем 
+
+
+<br>
+    <br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%"><img id="(10)">
+<div lang="latex"  align="center">
+B_{j_{*} } \ge B_{i_{*} } +c_{i_{*} j_{*} } .      
+</div>
+</td>
+      <td width="2%">(10)</td>
+    </tr>
+  </table>
+
+
+<br> 
+
+<br> &emsp;С другой стороны, так как 
+<div* lang="latex">i_{*} \in I_{j_{*} }^{-} </div*>,
+ согласно <a href="#(7)">(7)</a>  , получаем
+
+
+<br>
+    <br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%"><img id="(11)">
+<div lang="latex"  align="center">
+B_{j_{*} } =\mathop{\min }\limits_{i\in I_{j_{*} }^{-} } \, (B_{i} +c_{ij_{*} } )\le B_{i_{*} } +c_{i_{*} j_{*} } .    
+</div>
+</td>
+      <td width="2%">(11)</td>
+    </tr>
+  </table>
+
+
+<br>
+
+Из <a href="#(10)">(10)</a>   и <a href="#(11)">(11)</a>   следует, что
+
+<br>
+<br>
+<div lang="latex"  align="center">B_{j_{*} } =B_{i_{*} } +c_{i_{*} j_{*} } .</div>
+<br>
+<br>
+
+<br> &emsp;Узел 
+<div* lang="latex">j_{*} </div*>
+ добавим ко множеству 
+<div* lang="latex">I_{*} </div*>
+ и с новым множеством 
+<div* lang="latex">I_{*} </div*>
+повторяем описанные выше операции.
+
+<br> &emsp;Очевидно, что через конечное число шагов придем к одной из следующих ситуаций: либо 
+<div* lang="latex">t\in I_{*} </div*>, 
+либо 
+<div* lang="latex">U(I_{*} )=\emptyset</div*>.
+ Первая ситуация означает, что минимальный путь из 
+<div* lang="latex">s</div*> 
+в 
+<div* lang="latex">t</div*>
+ найден. Вторая ситуация означает, что в сети 
+<div* lang="latex">S</div*>
+ нет ни одного пути из 
+<div* lang="latex">s</div*>
+ в 
+<div* lang="latex">t.</div*>
+
+
+
+<br> &emsp;Описанную выше схему решения уравнения Беллмана можно реализовать с помощью <i>метода пометок.</i>
+
+
+
+<br>
+<br>
+
+
+<p class="title"><strong><a name="t1.3">4.1.3 Метод пометок</a></strong></p>
+
+
+
+
+
+<br> &emsp;Перед первой итерацией алгоритма полагаем
+
+<br>
+<br>
+<div lang="latex"  align="center">I_{*} =\{ s\} ,B_{s} =0,f(s)=s.</div>
+<br>
+
+
+<br> &emsp;Пусть перед началом текущей итерации известно множество узлов 
+<div* lang="latex">I_{*} </div*>
+сети, для которых найдены значения функции Беллмана 
+<div* lang="latex">B_{i} ,i\in I_{*}</div*>,
+ а также некоторой функции 
+<div* lang="latex">f(i)\in I_{*} ,i\in I_{*} .</div*>
+
+<br> &emsp;Обозначим через 
+<div* lang="latex">\omega (I_{*} )=\{ j\in I:(i,j)\in U(I_{*} )\} </div*>
+ множество узлов, соседних со множеством 
+<div* lang="latex">I_{*} .</div*>
+
+<br> &emsp;Если 
+<div* lang="latex">\omega (I_{*} )=\emptyset</div*>,
+ то в сети 
+<div* lang="latex">S</div*>
+ нет путей из 
+<div* lang="latex">s</div*>
+ в 
+<div* lang="latex">t</div*>.
+
+<br> &emsp;Пусть 
+<div* lang="latex">\omega (I_{*} )\not=\emptyset</div*>. 
+Подсчитаем числа (временные метки):
+
+
+<br>
+    <br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%"><img id="(12)">
+<div lang="latex"  align="center">
+B_{j}^{'} =\mathop{\min }\limits_{i\in I_{*} \bigcap I_{j}^{-} } (B_{i} +c_{ij} ),{\rm \; \; }j\in \omega (I_{*} ), 
+</div>
+</td>
+      <td width="2%">(12)</td>
+    </tr>
+  </table>
+
+
+<br>
+
+и найдем минимальное среди них
+
+
+
+<br>
+    <br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%"><img id="(13)">
+<div lang="latex"  align="center">
+B_{j_{*} }^{'} =\mathop{\min }\limits_{} B_{j}^{'} ,j\in \omega (I_{*} ). 
+</div>
+</td>
+      <td width="2%">(13)</td>
+    </tr>
+  </table>
+
+
+<br>
+
+<br> &emsp;Узлу 
+<div* lang="latex">j_{*} </div*>,
+ на котором реализовался минимум в <a href="#(13)">(13)</a>  , приписываем постоянную метку
+
+<br>
+<br>
+<div lang="latex"  align="center">B_{j_{*} } =B_{j_{*} }^{'} ,</div>
+<br>
+
+полагаем 
+<div* lang="latex">f(j_{*} )=i_{*} </div*>,
+ где 
+<div* lang="latex">i_{*} \in I_{*} </div*>
+ -- такой узел, что существует дуга 
+<div* lang="latex">(i_{*} ,j_{*} )\in U</div*>
+ и 
+<div* lang="latex">B_{j_{*} } =B_{i_{*} } +c_{i_{*} j_{*} } </div*>.
+ Узел 
+<div* lang="latex">j_{*} </div*>
+добавляем к узлам 
+<div* lang="latex">I_{*} </div*>.
+ Переходим к следующей итерации.
+
+<br>
+<br> &emsp;
+На каждой итерации алгоритма количество узлов, имеющих постоянные метки, увеличивается на единицу. Следовательно, через конечное число шагов придем к одной из следующих ситуаций:
+
+<br>
+<br> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; &emsp;&emsp;&emsp;&emsp;&emsp;а) 
+<div* lang="latex">t\in I_{*} </div*>; &emsp;&emsp;
+   б)
+	<div* lang="latex">\omega (I_{*} )=\emptyset</div*>.
+	
+
+<br>
+<br> &emsp; Случай «б» означает, что в сети  
+<div* lang="latex">S=\{ I,U\} </div*>
+ нет путей из 
+<div* lang="latex">s</div*>
+ в
+<div* lang="latex">t.</div*>
+
+ <br>
+<br> &emsp;Случай «а» означает, что 
+<div* lang="latex">B_{t}</div*>
+ -- длина кратчайшего пути из 
+<div* lang="latex">s</div*>
+ в
+<div* lang="latex">t.</div*>
+
+ <br> &emsp;Для построения самого кратчайшего пути из 
+<div* lang="latex">s</div*>
+ в
+<div* lang="latex">t</div*>
+ осуществим «обратный ход», используя функцию
+<div* lang="latex">f(i),i\in I_{*} </div*>.
+ С этой целью определим узлы по правилу
+
+
+
+<br>
+    <br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%"><img id="(14)">
+<div lang="latex"  align="center">
+i_{0} :=f(t),{\rm \; \; }i_{1} :=f(i_{0} ),{\rm \; \; }i_{2} :=f(i_{1} ),{\rm \; \; }...,{\rm \; \; } 
+</div>
+</td>
+      <td width="2%">(14)</td>
+    </tr>
+  </table>
+
+
+<br> 
+
+<br>
+<br>
+<div lang="latex"  align="center">i_{k} :=f(i_{k-1} ),{\rm \; \; }...,{\rm \; \; \; }i_{m} :=f(i_{m-1} )=s.</div>
+<br>
+
+Тогда путь из 
+<div* lang="latex">s</div*>
+ в
+<div* lang="latex">t</div*>
+имеет вид
+
+
+
+<br>
+    <br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%"><img id="(15)">
+<div lang="latex"  align="center">
+s\to i_{m-1} \to ...\to i_{k} \to i_{k-1} \to ...\to i_{1} \to i_{0} \to t. 
+</div>
+</td>
+      <td width="2%">(15)</td>
+    </tr>
+  </table>
+
+
+<br> 
+
+Пример, иллюстрирующий работу метода пометок, приведен на <a href="#pic3_1">рис. 3.1</a>.
+
+
+
+
+
+<br> &emsp; Дуги кратчайшего пути из узла 
+<div* lang="latex">s=1</div*>
+ в узел 
+<div* lang="latex">t=4</div*>
+ выделены жирными линиями.
+
+<br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%">
+        <div align="center"><img src="../../images/lk3/img3/63.gif" width="611" border="0" align="middle" alt=""></div>
+        <br><br><center>Рис. 3.1</center>
+      </td>
+      <td width="2%">&nbsp;</td>
+    </tr>
+  </table><br>
+  <br>
+  
+  <p class="title"><a name="t1.4"><b>4.1.4 Алгоритм Дейкстры</b></a></p>
+
+
+<br> &emsp; Описанный метод пометок можно сделать еще более детальным. Приводимая ниже модификация называется 
+«<b>жадным</b>» алгоритмом, или алгоритмом Дейкстры. Опишем этот алгоритм.
+
+<br> &emsp;Перед началом работы алгоритма полагаем
+
+ <br>
+<br>
+<div lang="latex"  align="center">I_{*} =\{ s\} ,\; B_{s} =0,\; f(s)=s, \; B_{j}^{'} =\infty, \; f^{'} (j)=0,\; j\in I\setminus s ,\;  i_{*} =s.</div>
+<br>
+
+<br>
+<br> &emsp; Пусть заданы множество и числа 
+<br>
+<br>
+<div lang="latex"  align="center">I_{*} ,B_{i} ,f(i),i\in I_{*} ,B_{j}^{'} ,f^{'} (j),j\in I\setminus I_{*}, </div>
+<br>
+
+
+ а также индекс 
+<div* lang="latex">i_{*} \in I_{*} .</div*>
+ 
+
+<br>
+
+<br> &emsp;Опишем алгоритм Дейкстры по шагам.
+<br>
+<br> &emsp;<b>Шаг 1.</b> Рассмотрим узлы
+
+<br>
+<br>
+<div lang="latex"  align="center">\tilde{I}_{i_{*} }^{+} =\{ j\in I\backslash I_{*} :\exists {\rm \; \; }(i_{*} ,j)\in U\} =I_{i_{*} }^{+} \bigcap (I\backslash I_{*} ).</div>
+<br>
+
+
+
+<br> &emsp; Для любого 
+
+<div* lang="latex">j\in \tilde{I}_{i_{*} }^{+} </div*>
+ при 
+<div* lang="latex">B_{j}^{'} >B_{i_{*} } +c_{i_{*} j_{} } </div*>
+положим
+
+<br>
+<br>
+<div lang="latex"  align="center">B_{j}^{'} :=B_{i_{*} } +c_{i_{*} j} ,f^{'} (j):=i_{*} ,</div>
+<br>
+ 
+
+
+в противном случае (т.е. при 
+<div* lang="latex">B_{j}^{'} \le B_{i_{*} } +c_{i_{*} j} </div*>
+) временные метки узла 
+<div* lang="latex">j</div*> не меняем
+<div* lang="latex">:B_{j}^{'} :=B_{j}^{'} ,\;\; f^{'} (j)=f^{'} (j)</div*>. 
+Переходим к шагу 2.
+
+<br>
+<br> &emsp;<b>Шаг 2.</b> Среди всех узлов 
+<div* lang="latex">j\in I\backslash I_{*} </div*>
+ ( т.е. узлов с временными метками) находим узел
+<div* lang="latex">j_{*} </div*>
+с минимальной временной меткой:
+
+<br>
+<br>
+<div lang="latex"  align="center">B_{j_{*} }^{'} =\min \limits_{j\in I\backslash I_{*}}B_{j}^{'}  .</div>
+<br>
+
+
+<br> &emsp;Если 
+<div* lang="latex">B_{j_{*} }^{'} =\infty</div*>,
+ то STOP -- алгоритм заканчивает свою работу, так как в сети нет путей из 
+<div* lang="latex">s</div*>
+ в 
+<div* lang="latex">t.</div*>
+<br> &emsp;Если 
+<div* lang="latex">B_{j_{*} }^{'} &lt;\infty</div*>,
+то переходим к шагу 3.
+
+<br>
+<br> &emsp;<b>Шаг 3.</b> Полагаем 
+<div* lang="latex">B_{j_{*} } :=B_{j_{*} }^{'} ,{\rm \; \; \; \; }f(j_{*} )=f^{'} (j_{*} )</div*>,
+ т.е. узлу 
+<div* lang="latex">j_{*} </div*>
+приписываем постоянные метки и относим узел 
+<div* lang="latex">j_{*}</div*>
+ ко множеству 
+<div* lang="latex">I_{*} </div*>,
+ заменяя 
+<div* lang="latex">I_{*} </div*>
+ на 
+<div* lang="latex">I_{*} :=
+=I_{*} \bigcup j_{*} </div*>.
+ 
+<br> &emsp;Полагаем 
+<div* lang="latex">i_{*} :=j_{*} </div*>
+ и переходим к шагу 1, если 
+<div* lang="latex">t\notin I_{*} </div*>.
+
+ <br> &emsp;Случай 
+<div* lang="latex">t\in I_{*} </div*>
+означает, что кратчайший путь из 
+<div* lang="latex">s</div*>
+ в 
+<div* lang="latex">t</div*> найден. Восстанавливаем этот путь по вторым постоянным меткам 
+<div* lang="latex">f(i),i\in I_{*} ,</div*>
+ согласно правилу <a href="#(14)">(14)</a>  , <a href="#(15)">(15)</a>  . Останавливаем работу алгоритма.
+
+<br>
+<br> &emsp;Заметим, что описанные алгоритмы обладают достоинством, о котором уже говорилось при изучении метода динамического программирования: 
+мы можем изменить условия задачи и быстро найти решение новой задачи. Например, мы можем легко найти кратчайший путь из 
+<div* lang="latex">s</div*>
+ в другой узел 
+<div* lang="latex">j_{0} \in I</div*>,
+ отличный от 
+<div* lang="latex">t</div*>.
+ <br> &emsp;Действительно, если узел 
+<div* lang="latex">j_{0} </div*>
+уже принадлежит множеству помеченных узлов 
+<div* lang="latex">I_{*} </div*>,
+ то кратчайший путь из
+ <div* lang="latex">s</div*>
+ в 
+<div* lang="latex">j_{0} </div*>
+ можно сразу восстановить по вторым постоянным меткам 
+<div* lang="latex">f(i),i\in I_{*} </div*>. 
+Если же данный узел 
+<div* lang="latex">j_{0} \notin I_{*} </div*>,
+ т.е. не имеет еще постоянной метки, то работу алгоритма надо продолжить до тех пор, пока ни реализуется одна из ситуаций:
+
+<br>
+<br>
+<div 
+  align="center"> <div* lang="latex">j_{0} \in I_{*} </div*> либо <div* lang="latex">B_{j_{*} }^{'} =\min \limits_{j\in I\backslash I_{*} } B_{j}^{'}  =\infty .</div*></div>
+	<br>
+	<br>
+	
+
+<br>
+  
+  
+  <p class="title"><a name="t1.6"><b>4.1.6 Алгоритм построения дерева кратчайших путей</b></a></p>
+
+
+
+<br> &emsp;Предположим теперь, что в сети 
+<div* lang="latex">S=\{ I,U\} </div*>
+ могут быть дуги с отрицательной длиной, но нет контуров с отрицательной суммарной длиной.
+ В этом случае описанные выше алгоритмы, основанные на идеях динамического программирования, 
+не применимы. В данной ситуации разумно использовать метод потенциалов (см. в разделе <a href="../lk6/lk6.htm">[Задача о потоке минимальной стоимости]</a>).
+ для решения задачи 
+<a href="#(1)">(1)</a>, <a href="#(2)">(2)</a>  . Отметим, что в силу специфики данной задачи (см. условие <a href="#(2)">(2)</a>  ) метод потенциалов можно упростить. 
+
+<br> &emsp;Приведем этот упрощенный вариант метода потенциалов, предназначенный для решения задачи <a href="#(1)">(1)</a>, <a href="#(2)">(2)</a>.
+
+<br> &emsp;Опишем вначале <b>алгоритм построения начального базиса </b>
+<div* lang="latex">U_{B} </div*>
+, который является деревом путей (необязательно кратчайших) из 
+<div* lang="latex">s</div*>
+в произвольный узел 
+<div* lang="latex">j\in I</div*>. 
+Это -- аналог алгоритма первой фазы метода потенциалов.
+
+<br>
+<br> &emsp;Положим 
+<div* lang="latex">I_{*} =\{ s\} ,B_{s} =0,f(s)=s.</div*>
+ 
+
+<br> &emsp;Пусть на некотором шаге известны множество 
+<div* lang="latex">I_{*} ,</div*>
+ числа 
+<div* lang="latex">B_{j} ,f(j),j\in I_{*} .</div*>
+ <br> &emsp;
+Если 
+<div* lang="latex">I_{*} =I,</div*>
+то начальный базис-дерево 
+<div* lang="latex">U_{{B}</div*>
+ построен. Его легко восстановить по вторым меткам 
+<div* lang="latex">f(i),i\in I,</div*>
+согласно правилам <a href="#(14)">(14)</a>, <a href="#(15)">(15)</a>.
+
+<br> &emsp;Пусть 
+<div* lang="latex">I_{*} \ne I.</div*>
+Если существует узел
+ <div* lang="latex">j\in I\backslash I_{*} ,</div*>
+для которого найдется дуга 
+<div* lang="latex">(i,j)\in U</div*>
+c 
+<div* lang="latex">i\in I_{*} ,</div*>
+то полагаем
+<br>
+<br>
+<div lang="latex"  align="center">B_{j} =B_{i} +c_{ij} ,{\rm \; \; }f(j)=i,{\rm \; \; \; \; }I_{*} :=I_{*} \bigcup j.</div>
+<br>
+
+<br> &emsp;Повторяем описанные выше операции с новым множеством 
+<div* lang="latex">I_{*}.</div*>
+
+<br> &emsp;Если 
+<div* lang="latex">I_{*} \ne I</div*>
+и не существует узла
+ <div* lang="latex">j\in I\backslash I_{*} ,</div*>
+ для которого найдется дуга 
+<div* lang="latex">(i,j)\in U</div*>
+c
+<div* lang="latex">i\in I_{*},</div*>
+то в заданной сети 
+<div* lang="latex">S=\{ I,U\} </div*> нельзя построить дерево кратчайших путей, поскольку не во все узлы есть пути из 
+<div* lang="latex">s.</div*>
+
+<br> &emsp;Пусть начальный базис-дерево 
+<div* lang="latex">U_{B} </div*>
+ построен. При этом будут построены и числа 
+<div* lang="latex">B_{j} ,j\in I,</div*>
+соответствующие <div* lang="latex">U_{B}.</div*>
+Очевидно, что 
+<div* lang="latex">B_{j} </div*>
+-- длина пути из 
+<div* lang="latex">s</div*>
+в 
+<div* lang="latex">j</div*> вдоль дуг дерева
+<div* lang="latex">U_{B}.</div*>
+
+<br> &emsp;Общий вид множества дуг <div* lang="latex">U_{B}} </div*> приведен на <a href="#pic3_2">рис. 3.2</a>.
+
+<br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%">
+        <div align="center"><img src="../../images/lk3/img3/94.gif" width="578" border="0" align="middle" alt=""></div>
+        <br><br><center>Рис. 3.2</center>
+      </td>
+      <td width="2%">&nbsp;</td>
+    </tr>
+  </table>
+  <br>
+  <br>
+  <br>
+
+<br> &emsp;Опишем шаги <b>алгоритма построения дерева кратчайших путей</b>
+
+
+<br>
+<br> &emsp;<b>Шаг 1.</b> Для небазисных дуг 
+<div* lang="latex">U_{H} =U\backslash  U_{B} </div*> проверяем условия оптимальности
+
+
+
+<br>
+    <br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%"><img id="(16)">
+<div lang="latex"  align="center">
+B_{i} +c_{ij} \ge B_{j} ,(i,j)\in U_{H}. 
+</div>
+</td>
+      <td width="2%">(16)</td>
+    </tr>
+  </table>
+
+
+<br>
+
+
+<br> &emsp; Если соотношения <a href="#(16)">(16)</a>   выполняются, то текущее дерево 
+<div* lang="latex">U_{B} </div*>
+ является деревом кратчайших путей. Алгоритм прекращает работу.
+
+<br>
+<br> &emsp;Если найдется дуга 
+<div* lang="latex">(i_{0} ,j_{0} )\in U_{H} </div*>, для которой
+
+
+<br>
+<br>
+<div lang="latex"  align="center"> B_{i_{0} } +c_{i_{0} j_{0} } < B_{j_{0} },</div>
+<br>
+
+
+
+ то зафиксируем эту дугу и перейдем к шагу 2.
+
+
+
+<br>
+<br> &emsp;<b>Шаг 2.</b> Рассмотрим множество дуг 
+<div* lang="latex">U_{B} \bigcup (i_{0} ,j_{0} )</div*>.
+
+
+<br>
+<br>
+
+ В  разделе <a href="../lk6/lk6.htm">[Задача о потоке минимальной стоимости]</a> было  показано, что добавление дуги 
+<div* lang="latex">(i_{0} ,j_{0} )\in U_{H} </div*>
+ к дереву 
+<div* lang="latex">U_{B} </div*>
+ приводит к образованию единственного цикла 
+<div* lang="latex">U_{*} \subset U_{B} \bigcup (i_{0} ,j_{0} )</div*>. 
+В нашем случае этот цикл обладает спецификой: цикл состоит как бы из двух частей. 
+В одну часть входят дуги, направление которых совпадает с направлением дуги 
+<div* lang="latex">(i_{0} ,j_{0} )</div*>, 
+другую часть цикла образуют дуги, имеющие обратное направление (см. <a href="#pic3_3">рис. 3.3</a>). 
+
+
+Отметим, что «прямые» дуги идут подряд, затем подряд идут 
+«обратные» дуги, т.е. нет чередования прямых и обратных дуг (что могло иметь место в общей задаче о потоке минимальной стоимости).
+
+<br>
+  
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%">
+        <div align="center"><img id="pic3_3" src="../../images/lk3/img3/a1.gif" width="595" border="0" align="middle" alt=""></div>
+        <br><br><center>Рис. 3.3</center>
+      </td>
+      <td width="2%">&nbsp;</td>
+    </tr>
+  </table>
+
+<br>
+<br> &emsp;<b>Шаг 3.</b> Далее, согласно методу потенциалов, надо вычислить шаг 
+<div* lang="latex">\theta _{0} =
+\min \limits_{U^-_*} x_{ij} , </div*>,
+ где 
+<div* lang="latex">U_{*}^{ -} </div*>
+ -- обратные дуги цикла. В общей задаче шаг 
+<div* lang="latex">\theta _{0} </div*>
+ мог реализоваться на любой дуге 
+<div* lang="latex">(i,j)\in U_{*}^{-} </div*>.
+
+ <br> &emsp;В силу специфики <a href="#(2)">(2)</a>   видно, что в нашем случае шаг 
+<div* lang="latex">\theta _{0} </div*> 
+обязательно реализуется на обратной дуге 
+<div* lang="latex">(i_{*} ,j_{0} )\in U_{*}^{ -} </div*>,
+ ведущей в узел 
+<div* lang="latex">j_{0} </div*>. 
+Удалим дугу 
+<div* lang="latex">(i_{*} ,j_{0} )</div*>
+ из множества <div* lang="latex">U_{B} </div*>, получим две компоненты связности 
+<div* lang="latex">\{ I_{1} ,U_{1} \} ,\{ I_{2} ,U_{2} \} </div*>,
+ одна из которых содержит узел <div* lang="latex">s</div*>, 
+другая -- узел 
+<div* lang="latex">j_{0} </div*>,
+
+<br>
+<br>
+
+<div lang="latex"  align="center">s\in I_{1} ,j_{0} \in I_{2} ,U_{1} \bigcup U_{2} =U_{B} \setminus (i_{*} ,j_{0} ).</div>
+<br>
+
+
+ (см. <a href="#pic3_4">рис. 3.4</a>).
+
+
+
+<br> &emsp;Вычислим новые потенциалы 
+<div* lang="latex">B_{j} ,j\in I,</div*>
+по правилу
+
+
+
+<br>
+    <br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%"><img id="(17)">
+<div lang="latex"  align="center"> 
+\begin{array}{l} {\bar{B}_{j} =B_{j} -(B_{j_{0} } -c_{i_{0} j_{0} } -B_{i_{0} } ),\, \, j\in I_{2} ;} \\ 
+{{\rm \; \; \; \; \; \; \; \; \; \; \; \; \; }\bar{B}_{j} =B_{j} ,\, j\in I_{1} .} \end{array} 
+</div>
+</td>
+      <td width="2%">(17)</td>
+    </tr>
+  </table>
+
+
+<br>
+
+
+<br>
+<br> &emsp;<b>Шаг 4.</b> Построим новое базисное дерево (см. <a href="#pic3_5">рис. 3.5</a>)
+
+
+
+<br>
+<br>
+<div lang="latex"  align="center">\bar{U}_{B} =(U_{B} \setminus(i_{*} ,j_{0} ))\bigcup (i_{0} ,j_{0} ).</div>
+<br>
+
+
+ Перейдем к шагу 1 с новым множеством 
+<div* lang="latex">\bar{U}_{B} </div*>
+и соответствующими ему потенциалами <a href="#(17)">(17)</a>.
+
+<br> &emsp;Приведенный алгоритм решает задачу за конечное число итераций.
+
+ <table width="100%" border="0">
+    <tr>
+      <td width="98%">
+        <div align="center"><img id="pic3_4" src="../../images/lk3/img3/a11.gif" width="586" border="0" align="middle" alt=""></div>
+        <br><br><center>Рис. 3.4</center>
+      </td>
+      <td width="2%">&nbsp;</td>
+    </tr>
+  </table><br>
+  
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%">
+        <div align="center"><img id="pic3_5" src="../../images/lk3/img3/a12.gif" width="581" border="0" align="middle" alt=""></div>
+        <br><br><center>Рис. 3.5</center>
+      </td>
+      <td width="2%">&nbsp;</td>
+    </tr>
+  </table>
+
+<br> &emsp;Описанный выше алгоритм, базирующийся на методе потенциалов, можно использовать и для выявления отрицательных контуров в сети.
+ Для этого на шаге 2 надо рассмотреть цикл <div* lang="latex">U_{*} \subset U_{B} \cup (i_{0} ,j_{0} )</div*>.
+ <br> &emsp;Если в этом цикле не все дуги имеют одно направление, то действуем как и раньше. 
+<br> &emsp;Если в цикле <div* lang="latex">U_{*} </div*> все дуги имеют одно направление, 
+то STOP -- в сети есть отрицательные контуры. В этом случае задача построения дерева кратчайших путей не имеет решения.
+
+
+
+
+<br>
+  <br>
+  <br>
+
+    
+
+
+
+
+
+<br>
+  <br>
+
+    <p class="title"><a name="t2"><b>4.2 Кратчайшие пути между всеми парами вершин (задача о многополюсной кратчайшей цепи)</b></a></p>
+    <p class="title"><a name="t2.1"><b>4.2.1. Обоснование метода решения с помощью динамического программирования</b></a></p>
+
+
+
+
+<br>
+
+<br>
+  &emsp; Рассмотрим задачу нахождения кратчайших путей между всеми парами узлов сети 
+<div* lang="latex">S={\rm \{ }I,U{\rm \} }</div*>. 
+
+<br>
+  &emsp;Пусть 
+<div* lang="latex">I={\rm \{ 1},2,...,n{\rm \} }</div*>
+ -- множество узлов сети <div* lang="latex">S</div*>, <div* lang="latex">c_{ij} \ge 0</div*> -- длина дуги <div* lang="latex">(i,j)\in U</div*>. Считаем, что 
+<div* lang="latex">c_{ij} =\infty </div*>, если 
+<div* lang="latex">(i,j)\notin U</div*>, и дуги из <div* lang="latex">U</div*> являются ориентированными. 
+Если одна из дуг (или несколько дуг) является неориентированной, 
+то считаем, что в сети есть ориентированные дуги <div* lang="latex">(i,j)</div*> и <div* lang="latex">(j,i)</div*> с одинаковой длиной <div* lang="latex">c_{ij} =c_{ji} </div*>.
+
+ <br>
+  &emsp;Для решения поставленной задачи будем использовать алгоритм, разработанный Флойдом. Для обоснования алгоритма воспользуемся методом динамического программирования.
+	
+	
+<br>
+
+<br>
+  &emsp;<b>1-й этап</b> Осуществим инвариантное погружение исходной задачи в семейство (состоящее из 
+	<div* lang="latex">n</div*>
+	задач) аналогичных задач. Каждая 
+	<div* lang="latex">j</div*>-я задача, 
+где <div* lang="latex">j=1,2,...,n</div*>, данного семейства формулируется следующим образом: для каждой пары узлов <div* lang="latex">i,\, \, k\in I</div*> найти путь минимальной длины, 
+промежуточные узлы которого могут принадлежать только множеству узлов <div* lang="latex">{\rm \{ 1},2,...,j{\rm \} }</div*>.
+
+<br>
+  &emsp;Обозначим через <div* lang="latex"> d_{ik}^{j} </div*> длину минимального пути из  <div* lang="latex"> \, i \, </div*> в <div* lang="latex">  \; k \;  </div*> 
+при условии, что промежуточными могут быть только узлы из <div* lang="latex">{\rm \{ 1},2,...,j{\rm \} }</div*>. 
+По построению <div* lang="latex"> d_{ik}^{j} </div*> -- это функция Беллмана.
+<br>
+<br>
+  &emsp;<b>2-й этап. </b> Составим уравнение Беллмана для функции Беллмана. С этой целью для пары узлов <div* lang="latex">i,\, \, k\in I</div*> рассмотрим все пути, 
+которые могут проходить через узлы <div* lang="latex">{\rm \{ }1,2,...,j+1{\rm \} }</div*>. Все такие пути можно разбить на две группы:
+
+<br>
+<br>
+  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;а) пути, не содержащие узел <div* lang="latex">j+1</div*>;
+
+<br>
+<br>
+  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; б) пути, содержащие узел <div* lang="latex">j+1</div*>.
+
+<br>
+<br>
+  &emsp;Найдём длину минимального пути в группе «а». Согласно определению функции Беллмана, длина такого пути равна <div* lang="latex">d_{ik}^{j} </div*>.
+
+ <br>
+  &emsp;Теперь найдём длину минимального пути в группе «б». Ясно, что длина такого пути равна <div* lang="latex">d_{ij+1}^{j} +d_{j+1k}^{j} </div*>. Значит, 
+длина минимального пути из <div* lang="latex">i</div*> в <div* lang="latex">k</div*> с промежуточными узлами, принадлежащими множеству <div* lang="latex">{\rm \{ }1,2,...,j+1{\rm \} }</div*>, равна 
+<div* lang="latex">\min \, {\rm \{ }d_{ik}^{j} ,d_{ij+1}^{j} +d_{j+1k}^{j} {\rm \} }</div*>.
+
+<br>
+  &emsp;Следовательно, согласно определению функции Беллмана, имеем
+
+
+
+
+<br>
+    <br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%"><img id="(18)">
+<div lang="latex"  align="center">
+d_{ik}^{j+1} =\min \, {\rm \{ }d_{ik}^{j} ,d_{i{\rm \; }j+1}^{j} +d_{j+1{\rm \; \; }k}^{j} {\rm \} },\, \, \forall i,\, \, \, \, k\in I.    
+</div>
+</td>
+      <td width="2%">(18)</td>
+    </tr>
+  </table>
+
+
+<br>
+
+
+
+
+ Уравнение <a href="#(18)">(18)</a> -- это уравнение Беллмана. Из него, в частности, следует, что
+<br>
+<br>
+<div lang="latex"  align="center">d_{j+1{\rm \; \; }k}^{j+1} =d_{j+1{\rm \; \; }k}^{j} ,{\rm \; \; \; }d_{i{\rm \; \; }j+1}^{j+1} =d_{i{\rm \; }j+1}^{j} ,\, \, \forall i,\, \, k\in I.</div> <br> 
+Кроме того, очевидно, что
+<br>
+<br>
+<div   align="center"> <div* lang="latex">d_{ii}^{j} =0</div*> при <div* lang="latex">\forall i\in I,\forall j=\overline{1,n}</div*>.</div>
+ <br>
+  &emsp;Зададим начальные условия для уравнения Беллмана:
+
+
+<br>
+    <br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%"><img id="(19)">
+<div lang="latex"  align="center">
+d_{ii}^{0} =0,\, \, i=\overline{1,n};\, {\rm \; \; }d_{ik}^{0} =c_{ik} ,{\rm \; \; }i=\overline{1,n};{\rm \; \; }k=\overline{1,n};{\rm \; \; }i\ne k.   
+</div>
+</td>
+      <td width="2%">(19)</td>
+    </tr>
+  </table>
+
+
+<br>
+ 
+
+
+<br>
+  &emsp; Напомним, что равенство <div* lang="latex">c_{ik} =\infty </div*> означает, что в сети <div* lang="latex">S={\rm \{ }I,U{\rm \} }</div*> нет дуги <div* lang="latex">(i,k)</div*>.
+
+<br>
+<br>
+  &emsp;
+<b>3-й этап.</b> Решим уравнение Беллмана (прямой ход) и по нему восстановим решение исходной задачи (обратный ход). 
+Уравнение <a href="#(18)">(18)</a> имеет явно выраженный динамический характер (динамика идёт по <div* lang="latex">j=1,2,...,n</div*>). 
+Для построения и запоминания функции Беллмана удобно использовать матричный метод, который позволит нам запоминать
+ длины кратчайших путей и восстановить дуги, входящие в эти пути.
+
+
+
+<br>
+  <br>
+  <p class="title"><strong><a name="t3.2.2">4.2.2 Алгоритм Флойда</a> </strong></p>
+	
+	<br>
+  &emsp;На каждой итерации алгоритма строятся две <div* lang="latex">(n\times n)</div*>-матрицы: 
+	<div* lang="latex">D</div*>
+	и 
+	<div* lang="latex">R</div*>.
+	
+Матрица 
+<div* lang="latex">D</div*>
+называется <i>матрицей длин кратчайших путей</i> и содержит текущие оценки длин кратчайших путей, т.е. на 
+<div* lang="latex">j</div*>-й итерации имеем
+<br>
+<br>
+<div lang="latex"  align="center">D^{j} =(d_{ik}^{j} ,\, \, k=\overline{1,n},\, \, i=\overline{1,n)}.</div> <br> 
+
+<br>
+  &emsp;Алгоритм начинает работу при <div* lang="latex">D^{0} =(d_{ik}^{0} ,\, \, k=\overline{1,n},\, \, i=\overline{1,n)},{\rm \; \; \; }</div*>
+где числа <div* lang="latex">d_{ik}^{0} </div*> определены согласно <a href="#(19)">(19)</a>. Для построения <div* lang="latex">D^{1} </div*> 
+используется <i>трёхместная операция</i> <a href="#(18)">(18)</a> при <div* lang="latex">j=1</div*>, и т.д.
+
+ <br>
+  &emsp;Матрица 
+	<div* lang="latex">R</div*>
+	называется <i>матрицей маршрутов</i> и служит для нахождения промежуточных узлов 
+(если такие имеются) кратчайших путей. На 
+<div* lang="latex">j</div*>-й итерации она определяется как 
+<div* lang="latex">R^{j} =(r_{ik}^{j} ,\, \, k=\overline{1,n},\, \, i=\overline{1,n})</div*>, где <div* lang="latex">r_{ik}^{j} </div*> -- 
+первый промежуточный узел кратчайшего пути из 
+<div* lang="latex">i</div*>
+ в 
+<div* lang="latex">k</div*>, получаемого на 
+<div* lang="latex">j</div*>-й итерации. 
+<br>
+<br>
+  &emsp;Алгоритм начинает работу при <div* lang="latex">R^{0} =(r_{ik}^{0} ,\, \, k=\overline{1,n},\, \, i=\overline{1,n})</div*>, где <div* lang="latex">r_{ik}^{0} =k</div*>. 
+На 
+<div* lang="latex">j</div*>-й итерации элемент <div* lang="latex">r_{ik}^{j} </div*> получается по следующим правилам:
+
+
+<br>
+    <br>
+  <table width="100%" border="0">
+    <tr>
+      <td width="98%"><img id="(20)">
+<div lang="latex"  align="center">
+r_{ik}^{j} =\left\{\begin{array}{l} {r_{ij}^{j-1} ,\; \mbox{ if } \; d_{ij}^{j-1} >{\rm \; }d_{ij}^{j-1} +d_{jk}^{j-1} ,} \\ 
+r_{ik}^{j-1}\;  \mbox{ otherwise}. \end{array}\right.  
+</div>
+</td>
+      <td width="2%">(20)</td>
+    </tr>
+  </table>
+
+
+<br>
+} 
+После построения <div* lang="latex">D^{0} </div*> и <div* lang="latex">R^{0} </div*> нужно последовательно построить матрицы <div* lang="latex">D^{j} ,R^{j} ,j=1,2,...,n</div*>, 
+используя правила пересчёта <a href="#(18)">(18)</a>, <a href="#(20)">(20)</a>.
+
+ <br>
+  &emsp;Опишем подробнее реализацию трёхместной операции <a href="#(18)">(18)</a> на 
+<div* lang="latex">j</div*>-й итерации, используя 
+матрицы <div* lang="latex">D^{j-1} </div*> и <div* lang="latex">R^{j-1} </div*>, полученные на 
+<div* lang="latex">(j-1)</div*>
+-й итерации.
+
+<br>
+<br>
+  &emsp;<b>Шаг 1.</b> Вычеркнем элементы 
+	<div* lang="latex">j</div*>-й строки и 
+	<div* lang="latex">j</div*>-го столбца матрицы <div* lang="latex">D^{j-1} </div*>. 
+Назовём элементы 
+<div* lang="latex">j</div*>-й строки и 
+<div* lang="latex">j</div*>-го столбца базисными элементами (базисной строкой и столбцом соответственно).
+
+<br>
+<br>
+  &emsp;<b>Шаг 2.</b> Для каждого элемента <div* lang="latex">(i,k)</div*>, <div* lang="latex">i\ne j,\, \, k\ne j</div*>, матрицы расстояний 
+(начиная с первого и не принадлежащего ни базисной строке, ни базисному столбцу) 
+сравним числа <div* lang="latex">d_{ik}^{j-1} </div*> и сумму соответствующих элементов базового столбца и базовой 
+строки <div* lang="latex">d_{ij}^{j-1} +d_{jk}^{j-1} </div*>. Если <div* lang="latex">d_{ij}^{j-1} +d_{jk}^{j-1} \ge d_{ik}^{j-1} </div*>, 
+то полагаем <div* lang="latex">d_{ik}^{j} =d_{ik}^{j-1} </div*> и выбираем новые значения для переменных <div* lang="latex">i</div*> и <div* lang="latex">k </div*>.
+ Если <div* lang="latex">d_{ij}^{j-1} +d_{jk}^{j-1} &lt; d_{ik}^{j-1} </div*>, то полагаем
+<br>
+<br>
+<div lang="latex"  align="center">d_{ik}^{j} =d_{ij}^{j-1} +d_{jk}^{j-1} </div> <br> 
+и переходим к новым переменным <div* lang="latex">i</div*>и <div* lang="latex">k</div*>. При этом параллельно изменяем элементы матрицы <div* lang="latex">R^{j-1} </div*>
+ на элементы матрицы <div* lang="latex">R^{j} </div*> 
+согласно правилам <a href="#(20)">(20)</a>. Для элементов базисной строки и базисного столбца полагаем
+
+
+<br>
+<br>
+<div lang="latex"  align="center">d_{ij}^{j} =d_{ij}^{j-1} ,\, \, \, i=\overline{1,n};\, \, \, d_{jk}^{j} =d_{jk}^{j-1} ,\, \, k=\overline{1,n},</div> <br> 
+т.е. они не меняются.
+<br>
+ <br>
+  &emsp;Анализируя соотношения <a href="#(18)">(18)</a>, можно разработать правила, упрощающие пересчёт матриц <div* lang="latex">D^{j-1} \to D^{j} </div*>.
+
+ <br>
+  &emsp;Ясно, что если <div* lang="latex">d_{ij}^{j-1} =\infty </div*> (т.е. <div* lang="latex">i </div*>-й элемент базисного столбца равен <div* lang="latex">\infty </div*>), то все элементы 
+<div* lang="latex">i</div*>-й строки остаются прежними и не пересчитываются:
+<br>
+<br>
+<div lang="latex"  align="center">d_{ik}^{j} =d_{ik}^{j-1} ,\, \, k=\overline{1,n}.</div> <br> 
+Аналогично, если <div* lang="latex">d_{kj}^{j-1} =\infty </div*> (т.е. <div* lang="latex">k</div*>-й элемент базисной строки равен <div* lang="latex">\infty </div*>), то все элементы 
+<div* lang="latex">k</div*>-го столба остаются прежними и не пересчитываются:
+<br>
+<br>
+<div lang="latex"  align="center">d_{ik}^{j} =d_{ik}^{j-1} ,\, \, i=\overline{1,n}.</div> <br> 
+<br>
+  &emsp;При реализации пересчёта <div* lang="latex">D^{j-1} \to D^{j} </div*> удобно из таблицы вычёркивать строки и столбцы, не подлежащие пересчёту.
+
+<br>
+  &emsp;Пусть матрицы <div* lang="latex">D^{j} </div*>и <div* lang="latex">R^{j} </div*>найдены. При <div* lang="latex">j<n</div*> переходим к новой <div* lang="latex">(j+1)</div*>-й итерации. 
+При <div* lang="latex">j=n</div*> STOP. Матрица <div* lang="latex">D^{n} </div*> состоит из длин минимальных путей. Матрица <div* lang="latex">R^{n} </div*> 
+используется для восстановления минимального пути.
+<br>
+ <br>
+  &emsp;Опишем процедуру восстановления кратчайшего пути.
+
+ <br>
+  &emsp;Предположим, нас интересует минимальный путь из <div* lang="latex">i_{0} </div*> в <div* lang="latex">j_{0} </div*>. Длина этого пути равна 
+<div* lang="latex">d_{i_{_{0} } j_{_{0} } }^{n} </div*>. Для восстановления пути из <div* lang="latex">i_{0} </div*> в <div* lang="latex">j_{0} </div*> 
+рассмотрим элементы матрицы <div* lang="latex">R^{n} </div*>:
+
+<br>
+  &emsp; 1. Найдём элементы <div* lang="latex">r_{i_{_{0} } j_{_{0} } }^{n} </div*>. Пусть <div* lang="latex">i_{1} :=r_{i_{_{0} } j_{_{0} } }^{n} </div*>, 
+значит, <div* lang="latex">i_{1} </div*> -- первый промежуточный узел кратчайшего пути из <div* lang="latex">i_{0} </div*> в <div* lang="latex">j_{0} </div*>.
+
+<br>
+  &emsp; 2. Найдём элемент <div* lang="latex">r_{i_{_{1} } j_{_{0} } }^{n} </div*>. Пусть <div* lang="latex">r_{i_{_{1} } j_{_{0} } }^{n} =i_{2} </div*>, 
+следовательно, <div* lang="latex">i_{2} </div*>-- первый промежуточный узел кратчайшего пути из <div* lang="latex">i_{1} </div*> в <div* lang="latex">j_{0} </div*>; <div* lang="latex">i_{2} </div*> -- 
+второй промежуточный узел кратчайшего пути из <div* lang="latex">i_{0} </div*> в <div* lang="latex">j_{0} </div*> и т.д., пока для некоторого <div* lang="latex">i_{s} </div*> 
+ни получим <div* lang="latex">r_{i_{s} j_{_{0} } }^{n} =j_{0} </div*>. Таким образом, минимальный путь из <div* lang="latex">i_{0} </div*> в <div* lang="latex">j_{0} </div*> 
+последовательно проходит через узлы <div* lang="latex">i_{0} ,\, \, i_{1} ,\, \, i_{2} ,\, \, ...,\, \, i_{s} ,\, \, j_{0} </div*>.
+
+
+<br>
+<br>
+
+<strong><a name="t2.3">&emsp;Пример.</a> </strong>
+
+<br>
+ <br>
+  &emsp;Крупное учреждение планирует разработать систему внутренней доставки почты, основанную 
+на использовании линии пневматической связи, для распределения корреспонденции между 8 отделами.
+ Некоторые отделы будут только отсылать корреспонденцию в другие отделы, не имея при этом возможности получать почту.
+ Все остальные отделы могут получать и отправлять почту. Расположение линий пневматической связи изображено на <a href="#pic3_6">рис. 3.6</a>.
+
+
+<br>
+  &emsp;Каждому отделу соответствует узел, каждая дуга -- это линия связи. Числа на дугах -- расстояния между отделами.
+
+
+
+
+
+<br>
+
+
+<table width="100%" border="0">
+  <tr>
+    <td width="98%">
+      <div align="center"><img id="pic3_6" src="../../images/lk3/img3_2/34.gif" width="484" border="0" align="middle" alt=""></div>
+      <br><br><center>Рис. 3.6</center>
+    </td>
+    <td width="2%">&nbsp;</td>
+  </tr>
+</table>
+<br>
+
+
+ <br>
+  &emsp;Для того чтобы каждый отдел при пересылке почты в другой отдел смог бы определить оптимальный путь, 
+необходимо заготовить таблицу, указывающую кратчайший путь между каждой парой отделов. Для построения 
+такой таблицы воспользуемся алгоритмом Флойда.
+
+ <br>
+  &emsp;Согласно алгоритму, начальные матрицы кратчайших путей и маршрутов имеют вид
+
+
+<br>
+<br>
+<div lang="latex"  align="center">
+D^{0} =\left[\begin{array}{cccccccc} 
+{0} & {9} & {\infty } & {3} & {\infty } & {\infty } & {\infty } & {\infty } \\
+{9} & {0} & {2} & {\infty } & {7} & {\infty } & {\infty } & {\infty } \\ 
+{\infty } & {2} & {0} & {2} & {4} & {8} & {6} & {\infty } \\
+ {3} & {\infty } & {2} & {0} & {\infty } & {\infty } & {5} & {\infty } \\ 
+{\infty } & {7} & {4} & {\infty } & {0} & {10} & {\infty } & {\infty } \\ 
+{\infty } & {\infty } & {8} & {\infty } & {10} & {0} & {7} & {\infty } \\ 
+{\infty } & {\infty } & {6} & {5} & {\infty } & {7} & {0} & {\infty } \\ 
+{\infty } & {\infty } & {\infty } & {\infty } & {9} & {12} & {10} & {0} \end{array}\right],</div> 
+<br>
+<br>
+
+<div lang="latex"  align="center">
+R^0=\left[\begin{array}{cccccccc}  
+{1} & {2} & {3} & {4} & {5} & {6} & {7} & {8} \\ 
+{1} & {2} & {3} & {4} & {5} & {6} & {7} & {8} \\
+{1} & {2} & {3} & {4} & {5} & {6} & {7} & {8} \\
+{1} & {2} & {3} & {4} & {5} & {6} & {7} & {8} \\
+{1} & {2} & {3} & {4} & {5} & {6} & {7} & {8} \\
+{1} & {2} & {3} & {4} & {5} & {6} & {7} & {8} \\
+{1} & {2} & {3} & {4} & {5} & {6} & {7} & {8} \\
+{1} & {2} & {3} & {4} & {5} & {6} & {7} & {8}  \end{array}\right].</div> 
+<br> 
+
+<br>
+
+
+
+<br>
+  &emsp;<b>Итерация 1.</b> <div* lang="latex">j=1</div*> -- базовый элемент. Из матрицы <div* lang="latex">D^{0} </div*> вычёркиваем 1-й столбец и 1-ю строку. Кроме того, столбцы 
+3, 5, 6, 7, 8 и строки 3, 5, 6, 7, 8 также можно вычеркнуть, так как в базовой строке и в базовом столбце на соответствующих
+ местах стоят <div* lang="latex">\infty </div*>. Следовательно, рабочая матрица имеет вид
+ 
+ <br>
+ <br>
+ 
+<table width="100%" border="0">
+  <tr>
+    <td width="98%">
+      <div align="center"><font size="4"><img src="../../images/lk3/img3_2/36.gif" width="268" height="141" border="0" align="middle" alt=""></font></div>
+    </td>
+    <td width="2%">&nbsp;</td>
+  </tr>
+</table>
+
+<br>
+  &emsp; Диагональные элементы матрицы <div* lang="latex">D^{0} </div*> можно не рассматривать. Значит, необходимо исследовать две оценки 
+<div* lang="latex">d_{24}^{0} </div*> и <div* lang="latex">d_{42}^{0} </div*>. Применение трёхместной операции даёт следующие результаты:
+<br>
+<br>
+<div lang="latex"  align="center">d_{24}^{1} =\min \, \, {\rm \{ }d_{24}^{0} ,d_{21}^{0} +d_{11}^{0} {\rm \} \; \; }=\min \, \, {\rm \; \{ \; }\infty ,9+3\, {\rm \} }=12,</div> <br> 
+<br>
+<br>
+<div lang="latex"  align="center">d_{42}^{1} =\min \, \, {\rm \; \{ }d_{42}^{0} ,\, \, d_{41}^{0} +d_{12}^{0} {\rm \} }=\min \, \, {\rm \; \{ }\infty ,\, \, 3+9{\rm \} }=12.</div> <br> 
+<br>
+<br>
+Новые оценки лучше старых: <div* lang="latex">d_{24}^{1}  &lt;  d_{24}^{0} </div*>, <div* lang="latex">d_{42}^{1}  &lt;  d_{42}^{0} </div*>, поэтому полагаем 
+<div* lang="latex">r_{24}^{1} =1</div*>, <div* lang="latex">r_{42}^{1} =1</div*>.
+ Все остальные элементы матриц <div* lang="latex">D^{1} </div*> и <div* lang="latex">R^{1} </div*> остаются прежними.
+<br>
+  &emsp; Выпишем матрицы <div* lang="latex">D^{1} </div*> и <div* lang="latex">R^{1} </div*>
+
+
+<br>
+<br>
+<div lang="latex"  align="center">
+D^{1} =\left[\begin{array}{cccccccc} {0} & {9} & {\infty } & {3} & {\infty } & {\infty } & {\infty } & {\infty } \\
+ {9} & {0} & {2} & {12} & {7} & {\infty } & {\infty } & {\infty } \\ {\infty } & {2} & {0} & {2} & {4} & {8} & {6} & {\infty } \\
+ {3} & {12} & {2} & {0} & {\infty } & {\infty } & {5} & {\infty } \\ {\infty } & {7} & {4} & {\infty } & {0} & {10} & {\infty } & {\infty } \\
+ {\infty } & {\infty } & {8} & {\infty } & {10} & {0} & {7} & {\infty } \\
+ {\infty } & {\infty } & {6} & {5} & {\infty } & {7} & {0} & {\infty } \\ 
+{\infty } & {\infty } & {\infty } & {\infty } & {9} & {12} & {10} & {0} \end{array}\right],</div> <br> 
+
+ <div lang="latex"  align="center"> R^{1} =
+\left[\begin{array}{cccccccc} {1} & {2} & {3} & {4} & {5} & {6} & {7} & {8} \\
+ {1} & {2} & {3} & {1} & {5} & {6} & {7} & {8} \\ {1} & {2} & {3} & {4} & {5} & {6} & {7} & {8} \\
+ {1} & {1} & {3} & {4} & {5} & {6} & {7} & {8} \\ {1} & {2} & {3} & {4} & {5} & {6} & {7} & {8} \\
+ {1} & {2} & {3} & {4} & {5} & {6} & {7} & {8} \\ {1} & {2} & {3} & {4} & {5} & {6} & {7} & {8} \\
+ {1} & {2} & {3} & {4} & {5} & {6} & {7} & {8} \end{array}\right].</div> <br> 
+
+
+<br>
+  &emsp;<b>Итерация 2.</b> Определим узел <div* lang="latex">j=2</div*> как базовый и выделим в <div* lang="latex">D^{1} </div*> 
+вторую строку и второй столбец -- это базовые строка и столбец. Кроме того, можно
+ вычеркнуть столбцы 6, 7, 8 и строки 6, 7, 8, так как в базовых строке и столбце 
+на соответствующих местах стоят <div* lang="latex">\infty </div*>. «Рабочая» матрица <div* lang="latex">D_p^{1} </div*> имеет вид
+
+<br>
+<br>
+<div lang="latex"  align="center">D_{p}^{1} =\begin{array}{cccccc} {} & {1} & {2} & {3} & {4} & {5} \\
+ {1} & {0} & {9} & {\infty } & {3} & {\infty } \\ {2} & {9} & {0} & {2} & {12} & {7} \\
+ {3} & {\infty } & {2} & {0} & {2} & {4} \\ {4} & {3} & {12} & {2} & {0} & {\infty } \\ 
+{5} & {\infty } & {7} & {4} & {\infty } & {0} \end{array}.</div> <br> 
+
+<br>
+  &emsp;Применяем трёхместную операцию к элементам матрицы <div* lang="latex">D_{p}^{1} </div*> (диагональные элементы не пересчитываем):
+
+
+<br>
+<br>
+<div lang="latex"  align="center">d_{13}^{2} =\min \left\{\, d_{13}^{1} ,\, \, d_{12}^{1} +d_{23}^{1} \right\}=\min \left\{\infty ,\, \, 9+2\right\}=11 &lt; d_{13}^{1}, </div> <br> 
+<br>
+<br>
+
+<div lang="latex"  align="center">d_{14}^{2} =\min \left\{\, d_{14}^{1} ,\, \, d_{12}^{1} +d_{24}^{1} \right\}=\min \left\{3,\, \, 9+12\right\}=3 &lt;  d_{14}^{1}, </div> <br> 
+<br>
+<br>
+
+<div lang="latex"  align="center">d_{15}^{2} =\min \left\{\, d_{15}^{1} ,\, \, d_{12}^{1} +d_{25}^{1} \right\}=\min \left\{\infty ,\, \, 9+7\right\}=16 &lt; d_{15}^{1} , </div> <br> 
+<br>
+<br>
+<div lang="latex"  align="center">d_{31}^{2} =\min \left\{\, d_{31}^{1} ,\, \, d_{32}^{1} +d_{23}^{1} \right\}=\min \left\{\infty ,\, \, 9+2\right\}=11 &lt;  d_{31}^{1} , </div> <br> 
+<br>
+<br>
+<div lang="latex"  align="center">d_{34}^{2} =\min \left\{\, 2,\, \, 12+2\right\}=2=d_{34}^{1} ,</div> <br> 
+<br>
+<br>
+<div lang="latex"  align="center">d_{35}^{2} =\min \left\{\, 4,\, \, 2+7\right\}=4=d_{35}^{1} ,</div> <br> 
+<br>
+<br>
+<div lang="latex"  align="center">d_{41}^{2} =\min \left\{\, 3,\, \, \infty +12\right\}=3=d_{41}^{1} ,</div> <br> 
+<br>
+<br>
+<div lang="latex"  align="center">d_{43}^{2} =\min \left\{\, 2,\, \, 12+0\right\}=2=d_{43}^{1} ,</div> <br> 
+<br>
+<br>
+<div lang="latex"  align="center">d_{45}^{2} =\min \left\{\, \infty ,\, \, 12+7\right\}=19 &lt; d_{45}^{1} ,</div> <br> 
+<br>
+<br>
+<div lang="latex"  align="center">d_{51}^{2} =\min \left\{\, \infty ,\, \, 9+7\right\}=16  &lt; d_{51}^{1} ,</div> <br> 
+<br>
+<br>
+<div lang="latex"  align="center">d_{53}^{2} =\min \left\{\, 4,\, \, 7+2\right\}=4=d_{53}^{1} ,</div> <br> 
+<br>
+<br>
+<div lang="latex"  align="center">d_{54}^{2} =\min \left\{\, \infty ,\, \, 7+12\right\}=2  &lt; d_{54}^{1} .</div> <br> 
+Остальные <div* lang="latex">d_{ik}^{2} =d_{ik}^{1} </div*>! Следовательно, полагаем 
+<div* lang="latex">r_{13}^{2} =r_{15}^{2} =r_{31}^{2} =r_{45}^{2} =r_{51}^{2} =r_{54}^{2} =2</div*> 
+и все остальные <div* lang="latex">r_{ik}^{2} </div*> не меняем: <div* lang="latex">r_{ik}^{2} =r_{ik}^{1} </div*>. Запишем матрицы <div* lang="latex">D^{2} </div*> и <div* lang="latex">R^{2} </div*>:
+
+ 
+<br>
+<br>
+<div lang="latex"  align="center">D^{2} =\left[\begin{array}{cccccccc} {0} & {9} & {11} & {3} & {16} & {\infty } & {\infty } & {\infty } \\
+ {9} & {0} & {2} & {12} & {7} & {\infty } & {\infty } & {\infty } \\ {11} & {2} & {0} & {2} & {4} & {8} & {6} & {\infty } \\ 
+{3} & {12} & {2} & {0} & {19} & {\infty } & {5} & {\infty } \\ 
+{16} & {7} & {4} & {19} & {0} & {10} & {\infty } & {\infty } \\ 
+{\infty } & {\infty } & {8} & {\infty } & {10} & {0} & {7} & {\infty } \\ 
+{\infty } & {\infty } & {6} & {5} & {\infty } & {7} & {0} & {\infty } \\ 
+{\infty } & {\infty } & {\infty } & {\infty } & {9} & {12} & {10} & {0} \end{array}\right],</div> <br> 
+
+<div lang="latex"  align="center">
+ R^{2} =\left[\begin{array}{cccccccc} {1} & {2} & {2} & {4} & {2} & {6} & {7} & {8} \\ 
+{1} & {2} & {3} & {1} & {5} & {6} & {7} & {8} \\ {2} & {2} & {3} & {4} & {5} & {6} & {7} & {8} \\ 
+{1} & {1} & {3} & {4} & {2} & {6} & {7} & {8} \\ {2} & {2} & {3} & {2} & {5} & {6} & {7} & {8} \\ 
+{1} & {2} & {3} & {4} & {5} & {6} & {7} & {8} \\ {1} & {2} & {3} & {4} & {5} & {6} & {7} & {8} \\ 
+{1} & {2} & {3} & {4} & {5} & {6} & {7} & {8} \end{array}\right].</div> <br> 
+
+
+
+<br>
+  &emsp; Выполняя аналогичные операции на итерациях 3, 4, 5, 6, 7, 8, мы получим матрицы 
+<div* lang="latex">D^{i} ,R^{i} ,\, \, i=\overline{3,8}</div*>. Матрицы <div* lang="latex">D^{8} </div*> и <div* lang="latex">R^{8} </div*> приведены ниже:
+
+ 
+<br>
+<br>
+<div lang="latex"  align="center">
+D^{8} =\left[\begin{array}{cccccccc} {0} & {7} & {5} & {3} & {9} & {13} & {8} & {\infty } \\ 
+{7} & {0} & {2} & {4} & {6} & {10} & {8} & {\infty } \\
+ {5} & {2} & {0} & {2} & {4} & {8} & {6} & {\infty } \\
+ {3} & {4} & {2} & {0} & {6} & {10} & {5} & {\infty } \\ 
+{9} & {6} & {4} & {6} & {0} & {10} & {10} & {\infty } \\ 
+{13} & {10} & {8} & {10} & {10} & {0} & {7} & {\infty } \\
+ {8} & {8} & {6} & {5} & {10} & {7} & {0} & {\infty } \\ 
+{18} & {15} & {13} & {15} & {9} & {12} & {10} & {0} \end{array}\right],
+ R^{8} =\left[\begin{array}{cccccccc} {1} & {4} & {4} & {4} & {4} & {4} & {4} & {8} \\
+ {3} & {2} & {3} & {3} & {3} & {3} & {3} & {8} \\
+ {4} & {2} & {3} & {4} & {5} & {6} & {7} & {8} \\ 
+{1} & {3} & {3} & {4} & {3} & {3} & {7} & {8} \\
+{3} & {3} & {3} & {3} & {5} & {6} & {3} & {8} \\ 
+{3} & {3} & {3} & {3} & {5} & {6} & {7} & {8} \\
+ {4} & {3} & {3} & {4} & {3} & {6} & {7} & {8} \\ 
+{5} & {5} & {5} & {5} & {5} & {6} & {7} & {8} \end{array}\right].</div> 
+<br> 
+
+<br>
+
+<br>
+  &emsp;Для иллюстрации результатов, содержащихся в матрицах <div* lang="latex">D^{8} </div*>, <div* lang="latex">R^{8} </div*>,
+ рассмотрим кратчайший путь из узла 1 в узел 5. Длина этого пути равна <div* lang="latex">d_{15}^{8} =9</div*>. 
+<br>
+  &emsp;Для того чтобы найти сам путь из 1 в 5, обратимся к матрице <div* lang="latex">R^{8} </div*>. Поскольку <div* lang="latex">r_{15}^{8} </div*>
+ равно 4, то узел 4 является первым промежуточным узлом пути из 1 в 5. Затем, для того чтобы найти узел, 
+следующий за узлом 4 в пути, ведущем в 5, определяем значение <div* lang="latex">r_{45}^{8} </div*>. Данное значение равно 3. 
+Значит, за узлом 4 следует узел 3. Далее находим <div* lang="latex">r_{35}^{8} =5</div*>. Следовательно, кратчайший путь из 1 в 5 
+проходит через узлы <div* lang="latex">1\to 4\to 3\to 5</div*>.
+
+
+
+
+
+</div>
+
+
+
+        <div title="Bottom">
+            <p>&nbsp;</p>
+            <hr size="2" width="100%" align="center">
+            <h1 class="Bottom">
+            <a href="../lk6/lk6.htm">[предыдущая тема]</a>
+            <a href="../../theory.htm">[оглавление]</a>
+            <a href="../lk4/lk4.htm">[следующая тема]</a>
+        </h1>
+        </div>
+</body>
+
+</html>
