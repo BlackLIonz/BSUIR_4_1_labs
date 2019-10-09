@@ -38,7 +38,7 @@ class Block:
             b = self.xor(b, self.transformation_G(21, self.plus(a, self.key[(7*i - 1) % 8])))
             c = self.xor(c, self.transformation_G(5, self.plus(d, self.key[(7*i) % 8])))
             a, b, c, d = c, a, d, b
-        Y = ''.join([a, b, c, d])
+        Y = ''.join([b, d, a, c])
         return Y
 
     def decrypt(self, text):
@@ -55,7 +55,7 @@ class Block:
             b = self.xor(b, self.transformation_G(21, self.plus(a, self.key[(7 * i - 5) % 8])))
             c = self.xor(c, self.transformation_G(5, self.plus(d, self.key[(7 * i - 6) % 8])))
             a, b, c, d = b, d, a, c
-        Y = ''.join([a, b, c, d])
+        Y = ''.join([c, a, d, b])
         letters = self.chunk_it(Y, len(Y) / 8)
 
         return Y
@@ -95,10 +95,12 @@ class Block:
     @staticmethod
     def int_to_binary(num):
         binary_num = '{0:b}'.format(num)
-        if (len(binary_num) % 8) == 0:
-            binary_num = str(binary_num)
-        else:
-            binary_num = '0' * (8 - (len(binary_num) % 8)) + str(binary_num)
+        for length in [8, 16, 32]:
+            if len(binary_num) < length:
+                binary_num = '0' * (length - (len(binary_num))) + str(binary_num)
+                break
+            elif len(binary_num) == length:
+                break
         return binary_num
 
     @staticmethod
@@ -136,4 +138,5 @@ class Block:
 
 block = Block('HelloWorldHelloW', 'SomeKeySomeKeySomeKeySomeKeySome')
 a = block.encrypt()
-print(a)
+print(''.join(block.text))
+print(block.decrypt(a))
