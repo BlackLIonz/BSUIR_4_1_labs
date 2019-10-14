@@ -21,13 +21,13 @@ def check_equability(k, numbers, start=0, end=1):
 class Random:
     def __init__(self, n):
         self.n = n
-        self.mcm_numbers = [self.multiplicative_congruent_method() for i in range(self.n)]
+        self.bsv_numbers = [self.multiplicative_congruent_method() for i in range(self.n)]
         self.sigma = 1
-        self.reversed_numbers = self.reverse_expr(self.expr, self.sigma)
+        self.urv_numbers = self.reverse_expr(self.expr, self.sigma)
 
     def reverse_expr(self, expr, sigma):
         number = []
-        for num in self.mcm_numbers:
+        for num in self.bsv_numbers:
             new_number = expr(num, sigma)
             number.append(new_number)
         return number
@@ -48,11 +48,11 @@ class Random:
         return A / m
 
     def equability_test(self, k, numbers):
-        if numbers is self.mcm_numbers:
+        if numbers is self.bsv_numbers:
             equ = check_equability(k, numbers)
             exp_value = 1 / 2
             dispersion = 1 / 12
-        elif numbers is self.reversed_numbers:
+        elif numbers is self.urv_numbers:
             equ = check_equability(k, numbers, 0, np.inf)
             exp_value = math.sqrt(math.pi / 2) * self.sigma
             dispersion = (2 - math.pi / 2) * self.sigma ** 2
@@ -65,34 +65,28 @@ class Random:
         plt.bar(x, y, width)
         math_value = self.get_exp_value(numbers)
         dispersion_exp = self.get_dispersion(numbers, math_value)
-        print(f'{math_value} -> {exp_value}')
-        print(f'{dispersion_exp} -> {dispersion}')
-        print(f'{self.get_interval_assessment_exp_value(math_value, dispersion, len(numbers))}')
-        print(f'{self.get_interval_assessment_dispersion(dispersion, len(numbers))}')
+        print(f'M: {math_value} -> {exp_value}')
+        print(f'M: {self.get_interval_assessment_exp_value(math_value, dispersion, len(numbers))}')
+        print(f'D: {dispersion_exp} -> {dispersion}')
+        print(f'D: {self.get_interval_assessment_dispersion(dispersion, len(numbers))}')
         plt.show()
         
     def pearson_consent_criteria(self, numbers):
         numbers_len = len(numbers)
-        if numbers is self.mcm_numbers:
+        if numbers is self.bsv_numbers:
             equ = check_equability(math.sqrt(numbers_len), numbers)
-            expr = lambda: 1 / len(equ)
-        elif numbers is self.reversed_numbers:
+            expr = lambda x: x
+        elif numbers is self.urv_numbers:
             equ = check_equability(math.sqrt(numbers_len), numbers, 0, np.inf)
-            expr = lambda x, sigma=1: (x / (sigma ** 2) * math.exp(-(x * x) / (2 * sigma ** 2)))
+            expr = lambda x, sigma=1: 1 - math.exp(-(x ** 2) / (2 * sigma ** 2))
         else:
             raise NotImplemented
         sigma = []
         for interval, frequency in equ.items():
-            if numbers is self.mcm_numbers:
-                p = expr()
-            elif numbers is self.reversed_numbers:
-                p = expr(interval[1]) - expr(interval[0])
-            else:
-                raise NotImplemented
+            p = expr(interval[1]) - expr(interval[0])
             sigma.append(math.pow((frequency - p), 2) / p)
         emp_chi2 = numbers_len * sum(sigma)
         return emp_chi2 < chi2.isf(0.05, len(equ) - 2)
-
 
     @staticmethod
     def get_interval_assessment_exp_value(exp_value, dispersion, n, conf_probability=0.95):
@@ -114,10 +108,10 @@ class Random:
         return (1 / (len(numbers) - 1)) * sum([(z - m) ** 2 for z in numbers])
 
     def independence_test(self, n, s):
-        R = 12 / (n - s) * sum([self.mcm_numbers[i] * self.mcm_numbers[i + s] for i in range(n - s)]) - 3
+        R = 12 / (n - s) * sum([self.bsv_numbers[i] * self.bsv_numbers[i + s] for i in range(n - s)]) - 3
         return R
 
-    def independence_graphic(self, start, stop, step):
+    def independence_graphic(self, start, stop, step=10):
         if stop > self.n:
             stop = self.n
         x = range(start, stop, step)
@@ -127,7 +121,11 @@ class Random:
 
 
 if __name__ == '__main__':
-    rand = Random(100)
-    rand.equability_test(100, rand.reversed_numbers)
-    rand.pearson_consent_criteria(rand.mcm_numbers)
-    # rand.independence_graphic(100, 10000, 100)
+    rand = Random(10000)
+    rand.equability_test(100, rand.bsv_numbers)
+    rand.independence_graphic(100, 10000, 100)
+    print('Pearson: ', rand.pearson_consent_criteria(rand.bsv_numbers))
+    print('=' * 50)
+    rand.equability_test(100, rand.urv_numbers)
+    rand.independence_graphic(100, 10000, 100)
+    print('Pearson: ', rand.pearson_consent_criteria(rand.bsv_numbers))
