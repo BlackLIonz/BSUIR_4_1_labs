@@ -1,7 +1,7 @@
 import copy
-from sortedcontainers import SortedDict
 
 import numpy as np
+from sortedcontainers import SortedDict
 
 
 class PotentialMethod:
@@ -33,14 +33,15 @@ class PotentialMethod:
         return self.U_non_basis
 
     def get_u(self):
-        self.u = {1: 0}
-        for edge, values in self.U_basis.items():
-            for j in values:
-                if self.u.get(edge) is not None:
-                    self.u[j] = self.u[edge] - self.c[(edge, j)]
-                elif self.u.get(j) is not None:
-                    self.u[edge] = self.c[(edge, j)] + self.u[j]
-        self.u = dict(SortedDict(self.u))
+        u = {1: 0}
+        while len(u) != 6:
+            for node, values in self.U_basis.items():
+                for j in values:
+                    if u.get(node) is not None and u.get(j) is None:
+                        u[j] = u[node] - self.c[(node, j)]
+                    elif u.get(j) is not None and u.get(node) is None:
+                        u[node] = self.c[(node, j)] + u[j]
+        self.u = dict(SortedDict(u))
         return self.u
 
     def get_deltas(self):
@@ -56,20 +57,43 @@ class PotentialMethod:
                     return self.ij_zero
 
     def find_cycle(self):
-        self.U_plus = [self.ij_zero]
-        self.U_minus = []
+        paths = self.create_paths()
+        positive_edge = self.ij_zero
+        positive_paths = []
+        negative_paths = []
+        for path in paths:
+            if all([node in path for node in positive_edge]):
+                positive_paths.append(path)
+            else:
+                negative_paths.append(path)
+        for positive_path in positive_paths:
+            for negative_path in negative_paths:
+                for i in range(1, len(max([positive_path, negative_path], key=len))):
+                    if positive_path[i] == negative_path[i]:
+                        self.U_plus = self.get_edges(positive_path[:i + 1])
+                        self.U_minus = self.get_edges(negative_path[:i + 1])
+                        return self.U_plus, self.U_minus
+
+    def create_paths(self):
         key, value = self.ij_zero
         graph = copy.deepcopy(self.U_basis)
         graph[key].append(value)
-        cycles = [[node] + path for node in graph for path in self.dfs(graph)]
-        for i in range(0, len(cycles), 2):
-            plus = self.get_edges(cycles[i])
-            minus = self.get_edges(cycles[i + 1])
-            if self.ij_zero in plus or self.ij_zero in minus:
-                self.U_plus = plus
-                self.U_minus = minus
-                break
-        return self.U_plus, self.U_minus
+
+        path = [[key]]
+        while True:
+            new_path = []
+            skip = 0
+            for node in path:
+                node_copy = copy.deepcopy(node)
+                if len(graph[node[-1]]) == 0:
+                    new_path.append(node_copy)
+                    skip += 1
+                    continue
+                for next_node in graph[node[-1]]:
+                    new_path.append(node_copy + [next_node])
+            if skip == len(new_path):
+                return new_path
+            path = new_path
 
     def get_edges(self, path):
         edges = []
@@ -110,6 +134,8 @@ class PotentialMethod:
     def create_new_U_b(self):
         self.U_basis[self.ij_zero[0]].append(self.ij_zero[1])
         self.U_basis[self.ij_astr[0]].remove(self.ij_astr[1])
+
+        self.U_non_basis = self.get_non_basis_edges()
 
     def solve(self):
         while True:
