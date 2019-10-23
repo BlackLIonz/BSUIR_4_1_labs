@@ -45,6 +45,7 @@ class PotentialMethod:
         return self.u
 
     def get_deltas(self):
+        self.deltas = {}
         for edge, values in self.U_non_basis.items():
             for j in values:
                 self.deltas[(edge, j)] = self.u[edge] - self.u[j] - self.c[(edge, j)]
@@ -132,17 +133,16 @@ class PotentialMethod:
             self.x[edge] += self.sigma
 
     def create_new_U_b(self):
-        self.U_basis[self.ij_zero[0]].append(self.ij_zero[1])
         self.U_basis[self.ij_astr[0]].remove(self.ij_astr[1])
-
-        self.U_non_basis = self.get_non_basis_edges()
+        self.U_basis[self.ij_zero[0]].append(self.ij_zero[1])
+        self.get_non_basis_edges()
 
     def solve(self):
         while True:
             self.get_u()
             self.get_deltas()
             if not self.get_invalid_delta():
-                raise NotImplemented
+                return self.x
             self.find_cycle()
             self.get_sigma()
             self.create_new_x()
@@ -171,7 +171,7 @@ if __name__ == '__main__':
         (2, 6): 3,
         (3, 2): 3,
         (3, 4): 5,
-        (5, 3): -4,
+        (5, 3): 4,
         (5, 4): 1,
         (6, 1): -2,
         (6, 3): 3,
@@ -189,4 +189,4 @@ if __name__ == '__main__':
         (6, 5): 0,
     }
     pm = PotentialMethod(S, U_b, weights, x)
-    pm.solve()
+    print(pm.solve())
