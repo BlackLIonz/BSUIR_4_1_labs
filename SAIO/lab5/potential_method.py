@@ -1,5 +1,7 @@
-import numpy as np
+import copy
 from sortedcontainers import SortedDict
+
+import numpy as np
 
 
 class PotentialMethod:
@@ -10,12 +12,14 @@ class PotentialMethod:
         self.c = weights
         self.x = x
         self.n = len(S)
-        self.u = {1: 0}
+        self.u = None
         self.deltas = {}
-        self.node_zero = None
+        self.ij_zero = None
         self.U_plus = None
         self.U_minus = None
         self.teta = None
+        self.ij_astr = None
+        self.sigma = None
 
     def get_non_basis_edges(self):
         self.U_non_basis = {}
@@ -29,6 +33,7 @@ class PotentialMethod:
         return self.U_non_basis
 
     def get_u(self):
+        self.u = {1: 0}
         for edge, values in self.U_basis.items():
             for j in values:
                 if self.u.get(edge) is not None:
@@ -47,20 +52,20 @@ class PotentialMethod:
         for index, delta in self.deltas.items():
             if delta > 0:
                 if index[1] in self.U_non_basis[index[0]]:
-                    self.node_zero = index
-                    return self.node_zero
+                    self.ij_zero = index
+                    return self.ij_zero
 
     def find_cycle(self):
-        self.U_plus = [self.node_zero]
+        self.U_plus = [self.ij_zero]
         self.U_minus = []
-        key, value = self.node_zero
-        graph = self.U_basis
+        key, value = self.ij_zero
+        graph = copy.deepcopy(self.U_basis)
         graph[key].append(value)
         cycles = [[node] + path for node in graph for path in self.dfs(graph)]
         for i in range(0, len(cycles), 2):
             plus = self.get_edges(cycles[i])
             minus = self.get_edges(cycles[i + 1])
-            if self.node_zero in plus or self.node_zero in minus:
+            if self.ij_zero in plus or self.ij_zero in minus:
                 self.U_plus = plus
                 self.U_minus = minus
                 break
@@ -73,7 +78,7 @@ class PotentialMethod:
         return edges
 
     def dfs(self, graph, end=2):
-        start = self.node_zero[0]
+        start = self.ij_zero[0]
         fringe = [(start, [])]
         while fringe:
             state, path = fringe.pop()
@@ -88,13 +93,34 @@ class PotentialMethod:
     def calculate_teta(self):
         self.teta = min([self.x[edge] for edge in self.U_minus])
 
+    def get_sigma(self):
+        min_x = (None, np.inf)
+        for edge in self.U_minus:
+            weight = self.x[edge]
+            if weight < min_x[1]:
+                min_x = (edge, weight)
+        self.ij_astr, self.sigma = min_x
+
+    def create_new_x(self):
+        for edge in self.U_minus:
+            self.x[edge] -= self.sigma
+        for edge in self.U_plus:
+            self.x[edge] += self.sigma
+
+    def create_new_U_b(self):
+        self.U_basis[self.ij_zero[0]].append(self.ij_zero[1])
+        self.U_basis[self.ij_astr[0]].remove(self.ij_astr[1])
+
     def solve(self):
-        self.get_u()
-        self.get_deltas()
-        if not self.get_invalid_delta():
-            raise NotImplemented
-        a = self.find_cycle()
-        print(a)
+        while True:
+            self.get_u()
+            self.get_deltas()
+            if not self.get_invalid_delta():
+                raise NotImplemented
+            self.find_cycle()
+            self.get_sigma()
+            self.create_new_x()
+            self.create_new_U_b()
 
 
 if __name__ == '__main__':
