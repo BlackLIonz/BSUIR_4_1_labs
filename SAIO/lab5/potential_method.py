@@ -17,7 +17,6 @@ class PotentialMethod:
         self.ij_zero = None
         self.U_plus = None
         self.U_minus = None
-        self.teta = None
         self.ij_astr = None
         self.sigma = None
 
@@ -102,22 +101,6 @@ class PotentialMethod:
             edges.append((path[i - 1], path[i]))
         return edges
 
-    def dfs(self, graph, end=2):
-        start = self.ij_zero[0]
-        fringe = [(start, [])]
-        while fringe:
-            state, path = fringe.pop()
-            if path and state == end:
-                yield path
-                continue
-            for next_state in graph[state]:
-                if next_state in path:
-                    continue
-                fringe.append((next_state, path + [next_state]))
-
-    def calculate_teta(self):
-        self.teta = min([self.x[edge] for edge in self.U_minus])
-
     def get_sigma(self):
         min_x = (None, np.inf)
         for edge in self.U_minus:
@@ -142,14 +125,83 @@ class PotentialMethod:
             self.get_u()
             self.get_deltas()
             if not self.get_invalid_delta():
-                return self.x
+                zipped = zip([x[1] for x in self.x.items()], [c[1] for c in self.c.items()])
+                value = sum([pair[0] * pair[1] for pair in zipped])
+                return self.x, value
             self.find_cycle()
             self.get_sigma()
             self.create_new_x()
             self.create_new_U_b()
 
 
+def test():
+    S = {
+        1: [2, 8],
+        2: [3, 6, 7],
+        3: [9],
+        4: [3],
+        5: [4],
+        6: [5],
+        7: [3, 4, 5, 9],
+        8: [7, 9],
+        9: [6],
+    }
+    U_b = {
+        1: [2, 8],
+        2: [3, 7],
+        5: [4],
+        6: [5],
+        7: [5],
+        9: [6],
+    }
+    weights = {
+        (1, 2): 9,
+        (1, 8): 5,
+        (2, 3): 1,
+        (2, 6): 3,
+        (2, 7): 5,
+        (3, 9): -2,
+        (4, 3): -3,
+        (5, 4): 6,
+        (6, 5): 8,
+        (7, 3): -1,
+        (7, 4): 4,
+        (7, 5): 7,
+        (7, 9): 1,
+        (8, 7): 2,
+        (8, 9): 2,
+        (9, 6): 6,
+    }
+    x = {
+        (1, 2): 2,
+        (1, 8): 7,
+        (2, 3): 4,
+        (2, 6): 0,
+        (2, 7): 3,
+        (3, 9): 0,
+        (4, 3): 0,
+        (5, 4): 3,
+        (6, 5): 4,
+        (7, 3): 0,
+        (7, 4): 0,
+        (7, 5): 5,
+        (7, 9): 0,
+        (8, 7): 0,
+        (8, 9): 0,
+        (9, 6): 2,
+    }
+    pm = PotentialMethod(S, U_b, weights, x)
+    solve, solve_sum = pm.solve()
+    for x, value in solve.items():
+        print(f'X{x[0]}{x[1]} = {value}')
+    print(f'Sum(c[i] * x[i]) = {solve_sum}')
+
+
 if __name__ == '__main__':
+    test()
+
+
+def test2():
     S = {
         1: [2],
         2: [6],
@@ -189,4 +241,7 @@ if __name__ == '__main__':
         (6, 5): 0,
     }
     pm = PotentialMethod(S, U_b, weights, x)
-    print(pm.solve())
+    solve, solve_sum = pm.solve()
+    for x, value in solve.items():
+        print(f'X{x[0]}{x[1]} = {value}')
+    print(f'Sum(c[i] * x[i]) = {solve_sum}')
