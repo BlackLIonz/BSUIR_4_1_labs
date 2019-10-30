@@ -7,8 +7,8 @@ SOURCE_DIR = "/home/shota/projects/BSUIR_4_1_labs/SAIO/theory/"
 
 def fix_folder(dir):
     for filename in os.listdir(dir):
-        if filename.endswith(".JPG"):
-            new_filename = filename.replace(".JPG", ".jpg")
+        if filename.endswith(".PNG"):
+            new_filename = filename.replace(".PNG", ".png")
             os.rename(
             os.path.join(dir, filename),
             os.path.join(dir, new_filename)
@@ -16,7 +16,7 @@ def fix_folder(dir):
 
 
 def iterate_folder(dir):
-    pathlist = Path(dir).glob('**/*.JPG')
+    pathlist = Path(dir).glob('**/*.PNG')
     for path in pathlist:
         # because path is object not string
         path_in_str = '/'.join(str(path).split('/')[:-1])
