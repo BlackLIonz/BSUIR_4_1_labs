@@ -24,6 +24,8 @@ class Random:
         self.bsv_numbers = [self.multiplicative_congruent_method() for i in range(self.n)]
         self.sigma = 1
         self.urv_numbers = self.reverse_expr(self.expr, self.sigma)
+        self.distribution_table = dict(((0, 0.25), (1, 0.5), (2, 0.25)))
+        self.discrete_numbers = self.discrete_generator(self.distribution_table)
 
     def reverse_expr(self, expr, sigma):
         number = []
@@ -47,6 +49,17 @@ class Random:
         f.write(str(A))
         return A / m
 
+    def discrete_generator(self, distribution_table):
+        res = []
+        probabilities = [sum(list(distribution_table.values())[:i+1]) for i in range(len(distribution_table))]
+        intervals = dict(zip(distribution_table.keys(), probabilities))
+        for rand_number in self.bsv_numbers:
+            for num, probability in intervals.items():
+                if rand_number <= probability:
+                    res.append(num)
+                    break
+        return res
+
     def equability_test(self, k, numbers):
         if numbers is self.bsv_numbers:
             equ = check_equability(k, numbers)
@@ -56,19 +69,20 @@ class Random:
             equ = check_equability(k, numbers, 0, np.inf)
             exp_value = math.sqrt(math.pi / 2) * self.sigma
             dispersion = (2 - math.pi / 2) * self.sigma ** 2
-        else:
-            raise ValueError('Numbers invalid')
+        elif numbers is self.discrete_numbers:
+            equ = check_equability(len(self.distribution_table), numbers, 0, 3)
         keys = list(equ.keys())
         x = [key[0] for key in keys]
         y = list(equ.values())
         width = keys[0][1] - keys[0][0]
         plt.bar(x, y, width)
-        math_value = self.get_exp_value(numbers)
-        dispersion_exp = self.get_dispersion(numbers, math_value)
-        print(f'M: {math_value} -> {exp_value}')
-        print(f'M: {self.get_interval_assessment_exp_value(math_value, dispersion, len(numbers))}')
-        print(f'D: {dispersion_exp} -> {dispersion}')
-        print(f'D: {self.get_interval_assessment_dispersion(dispersion, len(numbers))}')
+        if numbers is not self.discrete_numbers:
+            math_value = self.get_exp_value(numbers)
+            dispersion_exp = self.get_dispersion(numbers, math_value)
+            print(f'M: {math_value} -> {exp_value}')
+            print(f'M: {self.get_interval_assessment_exp_value(math_value, dispersion, len(numbers))}')
+            print(f'D: {dispersion_exp} -> {dispersion}')
+            print(f'D: {self.get_interval_assessment_dispersion(dispersion, len(numbers))}')
         plt.show()
         
     def pearson_consent_criteria(self, numbers):
@@ -79,8 +93,9 @@ class Random:
         elif numbers is self.urv_numbers:
             equ = check_equability(math.sqrt(numbers_len), numbers, 0, np.inf)
             expr = lambda x, sigma=1: 1 - math.exp(-(x ** 2) / (2 * sigma ** 2))
-        else:
-            raise NotImplemented
+        elif numbers is self.urv_numbers:
+            equ = check_equability(math.sqrt(numbers_len), numbers, 0, np.inf)
+            expr = lambda x: {1: 0.75, 2: 0.15, 3: 0.06, 4:0.04}
         sigma = []
         for interval, frequency in equ.items():
             p = expr(interval[1]) - expr(interval[0])
@@ -120,12 +135,19 @@ class Random:
         plt.show()
 
 
+def line():
+    print('=' * 50)
+
+
 if __name__ == '__main__':
+    line()
     rand = Random(10000)
     rand.equability_test(100, rand.bsv_numbers)
     rand.independence_graphic(100, 10000, 100)
     print('Pearson: ', rand.pearson_consent_criteria(rand.bsv_numbers))
-    print('=' * 50)
+    line()
     rand.equability_test(100, rand.urv_numbers)
-    rand.independence_graphic(100, 10000, 100)
-    print('Pearson: ', rand.pearson_consent_criteria(rand.bsv_numbers))
+    print('Pearson: ', rand.pearson_consent_criteria(rand.urv_numbers))
+    line()
+    rand.equability_test(100, rand.discrete_numbers)
+    # print('Pearson: ', rand.pearson_consent_criteria(rand.discrete_numbers))
