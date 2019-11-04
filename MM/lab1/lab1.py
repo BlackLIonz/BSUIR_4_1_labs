@@ -24,8 +24,8 @@ class Random:
         self.bsv_numbers = [self.multiplicative_congruent_method() for i in range(self.n)]
         self.sigma = 1
         self.urv_numbers = self.reverse_expr(self.expr, self.sigma)
-        self.distribution_table = dict(((0, 0.25), (1, 0.5), (2, 0.25)))
-        self.discrete_numbers = self.discrete_generator(self.distribution_table)
+        self.distribution_table = {0: 0.25, 1: 0.5, 2: 0.25}
+        self.drv_numbers = self.discrete_generator(self.distribution_table)
 
     def reverse_expr(self, expr, sigma):
         number = []
@@ -69,7 +69,7 @@ class Random:
             equ = check_equability(k, numbers, 0, np.inf)
             exp_value = math.sqrt(math.pi / 2) * self.sigma
             dispersion_exp = (2 - math.pi / 2) * self.sigma ** 2
-        elif numbers is self.discrete_numbers:
+        elif numbers is self.drv_numbers:
             equ = check_equability(len(self.distribution_table), numbers, 0, 3)
             exp_value = sum([x * p for x, p in self.distribution_table.items()])
             dispersion_exp = sum([x ** 2 * p for x, p in self.distribution_table.items()]) - exp_value ** 2
@@ -88,7 +88,7 @@ class Random:
         print(f'D: {self.get_interval_assessment_dispersion(dispersion, len(numbers))}')
         plt.show()
 
-    def pearson_consent_criteria(self, numbers):
+    def pearson_consent_criteria(self, numbers, expected=None, y=0.95):
         numbers_len = len(numbers)
         if numbers is self.bsv_numbers:
             equ = check_equability(math.sqrt(numbers_len), numbers)
@@ -96,21 +96,20 @@ class Random:
         elif numbers is self.urv_numbers:
             equ = check_equability(math.sqrt(numbers_len), numbers, 0, np.inf)
             expression = lambda x, sigma=1: 1 - math.exp(-(x ** 2) / (2 * sigma ** 2))
-        elif numbers is self.discrete_numbers:
-            equ = check_equability(len(self.distribution_table),
-                                   numbers,
-                                   min(self.distribution_table.keys()),
-                                   max(self.distribution_table.keys()) + 1)
-            expression = lambda x: self.distribution_table[x]
+        elif numbers is self.drv_numbers:
+            counter = list(Counter(numbers).items())
+            sorted_counter = sorted(counter, key=lambda x: x[0])
+            count_list = [item[1] for item in sorted_counter]
+            _, p_val = chisquare(count_list, f_exp=expected)
+            return p_val >= 1 - y
         else:
             raise NotImplemented
         sigma = []
-        equ_first = next(iter(equ))
-        p = expression(equ_first[1]) - expression(equ_first[0])
         for interval, frequency in equ.items():
+            p = expression(interval[1]) - expression(interval[0])
             sigma.append(math.pow((frequency - p), 2) / p)
         emp_chi2 = numbers_len * sum(sigma)
-        return emp_chi2 < chi2.isf(0.05, len(equ) - 2)
+        return emp_chi2 < chi2.isf(0.05, len(equ) - 1)
 
     @staticmethod
     def get_interval_assessment_exp_value(exp_value, dispersion, n, conf_probability=0.95):
@@ -143,13 +142,6 @@ class Random:
         plt.plot(x, y)
         plt.show()
 
-    def discrete_chi2_test(self, dist, expected, y=0.95):
-        counter_dist = list(Counter(dist).items())
-        sorted_counter_dist = sorted(counter_dist, key=lambda x: x[0])
-        count_list = [item[1] for item in sorted_counter_dist]
-        _, p_val = chisquare(count_list, f_exp=expected)
-        return p_val, p_val >= 1 - y
-
 
 def line():
     print('=' * 50)
@@ -165,5 +157,5 @@ if __name__ == '__main__':
     rand.equability_test(100, rand.urv_numbers)
     print('Pearson: ', rand.pearson_consent_criteria(rand.urv_numbers))
     line()
-    rand.equability_test(100, rand.discrete_numbers)
-    print('Pearson: ', rand.discrete_chi2_test(rand.discrete_numbers, [250, 500, 250]))
+    rand.equability_test(100, rand.drv_numbers)
+    print('Pearson: ', rand.pearson_consent_criteria(rand.drv_numbers, [250, 500, 250]))
