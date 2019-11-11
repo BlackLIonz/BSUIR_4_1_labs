@@ -22,14 +22,17 @@ class MaximalStream:
         while True:
             self.step_two()
             self.step_three()
-            if self.step_four():
-                return self.x
-            self.step_five()
+            if self.step_four() == 'continue':
+                continue
+            if not self.step_five():
+                return self.x, self.v
 
     def step_two(self):
         i = self.i
         neighbors = self.U[i]
         for j in neighbors:
+            if j in self.L:
+                continue
             if self.x[(i, j)] < self.d[(i, j)]:
                 self.L.append(j)
                 self.g[j] = i
@@ -50,41 +53,49 @@ class MaximalStream:
     def step_four(self):
         if self.t in self.L:
             self.recovery_path()
-            return 1
+            self.drop_vars()
+            return 'continue'
+
+    def drop_vars(self):
+        self.I_c = 1
+        self.I_t = 1
+        self.L = [self.s]
+        self.g = {self.s: 0}
+        self.i = self.s
+        self.p = {self.s: 1}
 
     def step_five(self):
         self.I_c += 1
         for p, value in self.p.items():
             if value == self.I_c:
                 self.i = p
-                return
-        raise NotImplemented('End?')
+                return True
+        return False
 
     def recovery_path(self):
         a = []
+        path = [self.t]
         i = self.g[self.t]
-        a.append(self.d[(i, self.t)] - self.x[(i, self.t)])
-        while True:
-            q = self.g[i]
-            if q >= 0:
-                new_a = min([a[-1], self.d[(q, i)] - self.x[(q, i)]])
-                a.append(new_a)
-            elif q < 0:
-                new_a = min([a[-1], self.x[(i, -q)]])
-                a.append(new_a)
-            i = math.fabs(q)
-            if q == self.s:
-                break
-        i = self.g[self.t]
-        while True:
-            q = self.g[i]
-            if q >= 0:
-                self.x[(q, i)] += a[-1]
-            elif q < 0:
-                self.x[(i, -q)] -= a[-1]
-            i = math.fabs(q)
-            if q == self.s:
-                break
+        a.append(self.d[i, self.t] - self.x[i, self.t])
+        while i != self.s:
+            path.append(i)
+            s = math.fabs(i)
+            i = self.g[s]
+            if i >= 0:
+                a.append(min(a[-1], self.d[i, s] - self.x[i, s]))
+            else:
+                a.append(min(a[-1], self.x[s, -i]))
+        path.append(self.s)
+        a_m = a[-1]
+        for i in range(len(path) - 1):
+            i, j = path[i: i + 2]
+            if i < 0:
+                i = math.fabs(i)
+            if j < 0:
+                i, j = math.fabs(j), i
+            self.x[j, i] = self.x[j, i] + a_m
+        self.v = self.v + a_m
+
 
 
 if __name__ == '__main__':
