@@ -9,7 +9,7 @@ from SAIO.lab8.maximal_stream import MaximalStream
 class HungarianAlgorithm:
     def __init__(self, array):
         self.matrix = array
-        self.n = len(matrix)
+        self.n = len(array)
         self.v = self.y = None
 
     def solve(self):
