@@ -40,12 +40,12 @@ class Random:
 
     @staticmethod
     def multiplicative_congruent_method(a=214013, m=2 ** 32):
-        f = open('A', 'r')
+        f = open('A.txt', 'r')
         A = int(f.readline())
         f.close()
         new_A = (a * A) % m
         A = new_A
-        f = open('A', 'w')
+        f = open('A.txt', 'w')
         f.write(str(A))
         return A / m
 
