@@ -47,7 +47,7 @@ class DCRV:
         x, y = list(zip(*self.pairs))
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
-        hist, x_edges, y_edges = np.histogram2d(x, y, bins=32, range=[[0, 1], [0, 1]], density=True)
+        hist, x_edges, y_edges = np.histogram2d(x, y, range=[[0, 1], [0, 1]], density=True)
 
         x_pos, y_pos = np.meshgrid(x_edges[:-1], y_edges[:-1], indexing="ij")
         x_pos = x_pos.ravel()
@@ -55,7 +55,7 @@ class DCRV:
         z_pos = 0
 
         dx = dy = 0.1 * np.ones_like(z_pos)
-        dz = hist.ravel()
+        dz = hist.ravel() / self.n
 
         ax.bar3d(x_pos, y_pos, z_pos, dx, dy, dz, zsort='average')
         plt.show()
