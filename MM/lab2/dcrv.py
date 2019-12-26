@@ -172,7 +172,7 @@ class DCRV:
         print(f'Wald test for var x: {self.wald_test(x, theoretical_var_x, np.var)}')
         print(f'Wald test for var y: {self.wald_test(y, theoretical_var_y, np.var)}')
         print(line('Z-test for correlation'))
-        print(f'Z-test: {self.z_test(correlation, theoretical_correlation, theoretical_var_x)}')
+        print(f'Z-test: {self.z_test(self.fisher_transformation(correlation), self.fisher_transformation(theoretical_correlation), theoretical_var_x)}')
         print(line())
 
 
